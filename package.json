@@ -1,0 +1,55 @@
+{
+  "name": "insight-erp-api",
+  "version": "0.0.1",
+  "description": "Backend RESTful API for Insight ERP - an intuitive ERP solution for SMBs that streamlines operations and fosters collaboration.",
+  "main": "dist/Server.js",
+  "scripts": {
+    "start": "node dist/Server.js",
+    "dev": "nodemon src/Server.ts",
+    "build": "tsc -p .",
+    "migrate": "npx prisma migrate dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/insight-erp/insight-erp-api.git"
+  },
+  "author": "Cody Fingerson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/insight-erp/insight-erp-api/issues"
+  },
+  "homepage": "https://github.com/insight-erp/insight-erp-api#readme",
+  "dependencies": {
+    "@prisma/client": "^6.3.0",
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-async-handler": "^1.2.0",
+    "express-session": "^1.18.1",
+    "helmet": "^8.0.0",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/cookie-parser": "^1.4.8",
+    "@types/express": "^5.0.0",
+    "@types/express-session": "^1.18.1",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^22.13.1",
+    "@types/passport": "^1.0.17",
+    "@types/passport-local": "^1.0.38",
+    "morgan": "^1.10.0",
+    "nodemon": "^3.1.9",
+    "prisma": "^6.3.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  },
+  "nodemonConfig": {
+    "execMap": {
+      "ts": "node -r ts-node/register"
+    }
+  }
+}
