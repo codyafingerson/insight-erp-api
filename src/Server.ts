@@ -9,6 +9,7 @@ import passport from './config/passport';
 
 // Controllers
 import RolesRoutes from './api/roles/RolesRoutes';
+import UsersRoutes from './api/users/UsersRoutes';
 
 class Server {
     private app: Application;
@@ -81,6 +82,7 @@ class Server {
         });
 
         this.app.use('/api/roles', RolesRoutes);
+        this.app.use('/api/users', UsersRoutes);
     }
 }
 
