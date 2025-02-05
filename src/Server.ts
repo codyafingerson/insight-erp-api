@@ -7,6 +7,9 @@ import helmet from 'helmet';
 import session from 'express-session';
 import passport from './config/passport';
 
+// Controllers
+import RolesRoutes from './api/roles/RolesRoutes';
+
 class Server {
     private app: Application;
 
@@ -76,6 +79,8 @@ class Server {
         this.app.get('/', (req: Request, res: Response) => {
             res.status(200).json({ message: 'Successfully connected to Insight ERP API' });
         });
+
+        this.app.use('/api/roles', RolesRoutes);
     }
 }
 
