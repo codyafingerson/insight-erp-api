@@ -2,14 +2,15 @@ import dotenv from 'dotenv';
 import express, { Application, Request, Response } from 'express';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-import errorHandler from './middlewares/errorHandler';
 import helmet from 'helmet';
 import session from 'express-session';
 import passport from './config/passport';
+import { errorLogger, errorResponder } from './middlewares/errorMiddleware';
 
 // Controllers
 import RolesRoutes from './api/roles/RolesRoutes';
 import UsersRoutes from './api/users/UsersRoutes';
+import AuthRoutes from './api/auth/AuthRoutes';
 
 class Server {
     private app: Application;
@@ -21,9 +22,6 @@ class Server {
     }
 
     public start() {
-        // Error handler middleware must be declared after all other middlewares and routes
-        // to ensure that it can catch errors from all of them
-        this.app.use(errorHandler);
         const server = this.app.listen(this.app.get('port'), () => {
             console.log(`Server running on port ${this.app.get('port')}`);
         });
@@ -74,6 +72,9 @@ class Server {
 
         this.app.use(passport.initialize());
         this.app.use(passport.session());
+
+        this.app.use(errorLogger);
+        this.app.use(errorResponder);
     }
 
     private routes() {
@@ -81,6 +82,7 @@ class Server {
             res.status(200).json({ message: 'Successfully connected to Insight ERP API' });
         });
 
+        this.app.use('/api/auth', AuthRoutes);
         this.app.use('/api/roles', RolesRoutes);
         this.app.use('/api/users', UsersRoutes);
     }
