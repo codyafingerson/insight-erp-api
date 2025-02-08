@@ -1,22 +1,29 @@
-// config/passport.ts
-import passport from 'passport';
-import { Strategy as LocalStrategy } from 'passport-local';
-import { compare } from 'bcrypt';
-import prisma from './prisma';
+import passport from "passport";
+import { Strategy as LocalStrategy } from "passport-local";
+import AuthService from "../api/auth/AuthService";
+import { CredentialsDto } from "../api/auth/AuthDto";
+import prisma from "./prisma";
+
+const authService = new AuthService();
 
 passport.use(
     new LocalStrategy(
-        { usernameField: 'username', passwordField: 'password' },
+        {
+            usernameField: "username",
+            passwordField: "password",
+        },
         async (username, password, done) => {
             try {
-                const user = await prisma.user.findUnique({ where: { username } });
+                const user = await authService.validateUser({ username, password });
+
                 if (!user) {
-                    return done(null, false, { message: 'Invalid username' });
+                    return done(null, false, { message: "Incorrect username or password." });
                 }
-                const isMatch = await compare(password, user.password);
-                if (!isMatch) {
-                    return done(null, false, { message: 'Incorrect password' });
-                }
+
+                // Ensure the password IS NOT included in the user object
+                // before passing the user object to the done callback.
+                delete user.password;
+                
                 return done(null, user);
             } catch (error) {
                 return done(error);
@@ -32,12 +39,9 @@ passport.serializeUser((user: any, done) => {
 passport.deserializeUser(async (id: string, done) => {
     try {
         const user = await prisma.user.findUnique({ where: { id } });
-        if (!user) {
-            return done(new Error('User not found'), null);
-        }
-        return done(null, user);
+        done(null, user);
     } catch (error) {
-        return done(error, null);
+        done(error);
     }
 });
 
