@@ -3,11 +3,21 @@ import UserService from "./UsersService";
 import { CreateUserDto, UpdateUserDto } from "./UsersDto";
 
 export default class UserController {
-    static async createUser(req: Request, res: Response) {
+    constructor(private readonly userService: UserService) {
+        this.userService = userService;
+
+        this.createUser = this.createUser.bind(this);
+        this.updateUser = this.updateUser.bind(this);
+        this.getAllUsers = this.getAllUsers.bind(this);
+        this.getUserById = this.getUserById.bind(this);
+        this.deleteUser = this.deleteUser.bind(this);
+    }
+
+    async createUser(req: Request, res: Response) {
         try {
             const { isActive = true, roleId, name, username, email, password } = req.body;
             const data: CreateUserDto = { isActive, roleId, name, username, email, password };
-            const user = await UserService.createUser(data);
+            const user = await this.userService.createUser(data);
 
             res.status(201).json(user);
         } catch (error) {
@@ -15,12 +25,12 @@ export default class UserController {
         }
     }
 
-    static async updateUser(req: Request, res: Response) {
+    async updateUser(req: Request, res: Response) {
         try {
             const { id } = req.params;
             const { isActive, roleId, name, username, email, password } = req.body;
             const data: UpdateUserDto = { isActive, roleId, name, username, email, password };
-            const user = await UserService.updateUser(id, data);
+            const user = await this.userService.updateUser(id, data);
 
             res.status(200).json(user);
         } catch (error) {
@@ -28,9 +38,9 @@ export default class UserController {
         }
     }
 
-    static async getAllUsers(req: Request, res: Response) {
+    async getAllUsers(req: Request, res: Response) {
         try {
-            const users = await UserService.getAllUsers();
+            const users = await this.userService.getAllUsers();
 
             res.status(200).json(users);
         } catch (error) {
@@ -38,10 +48,10 @@ export default class UserController {
         }
     }
 
-    static async getUserById(req: Request, res: Response) {
+    async getUserById(req: Request, res: Response) {
         try {
             const { id } = req.params;
-            const user = await UserService.getUserById(id);
+            const user = await this.userService.getUserById(id);
 
             res.status(200).json(user);
         } catch (error) {
@@ -49,10 +59,10 @@ export default class UserController {
         }
     }
 
-    static async deleteUser(req: Request, res: Response) {
+    async deleteUser(req: Request, res: Response) {
         try {
             const { id } = req.params;
-            await UserService.deleteUser(id);
+            await this.userService.deleteUser(id);
 
             res.status(204).end();
         } catch (error) {

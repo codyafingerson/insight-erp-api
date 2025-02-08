@@ -3,8 +3,14 @@ import { hashPassword } from "../../utils/bcrypt";
 import { CreateUserDto, UpdateUserDto, UserResponseDto } from "./UsersDto";
 
 export default class UserService {
-    static async createUser(data: CreateUserDto) {
-        const userExists = await prisma.user.findFirst({
+    private prisma: typeof prisma;
+
+    constructor() {
+        this.prisma = prisma;
+    }
+
+    async createUser(data: CreateUserDto) {
+        const userExists = await this.prisma.user.findFirst({
             where: {
                 OR: [
                     { email: data.email },
@@ -17,7 +23,7 @@ export default class UserService {
             throw new Error("User already exists");
         }
 
-        const role = await prisma.role.findUnique({
+        const role = await this.prisma.role.findUnique({
             where: {
                 id: data.roleId,
             },
@@ -27,7 +33,7 @@ export default class UserService {
             throw new Error("The specified role does not exist");
         }
 
-        const createdUser = await prisma.user.create({
+        const createdUser = await this.prisma.user.create({
             data: {
                 name: data.name,
                 username: data.username,
@@ -52,8 +58,8 @@ export default class UserService {
         return createdUser as UserResponseDto;
     }
 
-    static async getUserById(id: string) {
-        const user = await prisma.user.findUnique({
+    async getUserById(id: string) {
+        const user = await this.prisma.user.findUnique({
             where: {
                 id,
             },
@@ -74,8 +80,8 @@ export default class UserService {
         return user as UserResponseDto;
     }
 
-    static async getAllUsers(sortBy: string = 'name', order: 'asc' | 'desc' = 'asc') {
-        const users = await prisma.user.findMany({
+    async getAllUsers(sortBy: string = 'name', order: 'asc' | 'desc' = 'asc') {
+        const users = await this.prisma.user.findMany({
             orderBy: {
                 [sortBy]: order,
             },
@@ -96,8 +102,8 @@ export default class UserService {
         return users as Array<UserResponseDto>;
     }
 
-    static async updateUser(id: string, user: UpdateUserDto) {
-        const updatedUser = await prisma.user.update({
+    async updateUser(id: string, user: UpdateUserDto) {
+        const updatedUser = await this.prisma.user.update({
             where: {
                 id,
             },
@@ -121,8 +127,8 @@ export default class UserService {
         return updatedUser as UserResponseDto;
     }
 
-    static async deleteUser(id: string) {
-        const deletedUser = await prisma.user.delete({
+    async deleteUser(id: string) {
+        const deletedUser = await this.prisma.user.delete({
             where: {
                 id,
             },

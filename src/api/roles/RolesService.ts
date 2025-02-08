@@ -3,8 +3,14 @@ import { UserResponseDto } from "../users/UsersDto";
 import { CreateRoleDto, RoleResponseDto } from "./RolesDto";
 
 export default class RolesService {
-    static async createRole(data: CreateRoleDto) {
-        const roleExists = await prisma.role.findFirst({
+    private prisma: typeof prisma;
+
+    constructor() {
+        this.prisma = prisma;
+    }
+    
+    async createRole(data: CreateRoleDto) {
+        const roleExists = await this.prisma.role.findFirst({
             where: {
                 name: data.name,
             },
@@ -14,7 +20,7 @@ export default class RolesService {
             throw new Error("Role already exists");
         }
 
-        const createdRole = await prisma.role.create({
+        const createdRole = await this.prisma.role.create({
             data: {
                 name: data.name,
                 description: data.description
@@ -29,8 +35,8 @@ export default class RolesService {
         return createdRole as RoleResponseDto;
     }
 
-    static async getRoleById(id: string) {
-        const role = await prisma.role.findUnique({
+    async getRoleById(id: string) {
+        const role = await this.prisma.role.findUnique({
             where: {
                 id,
             },
@@ -47,8 +53,8 @@ export default class RolesService {
         return role as RoleResponseDto;
     }
 
-    static async getAllRoles() {
-        const roles = await prisma.role.findMany({
+    async getAllRoles() {
+        const roles = await this.prisma.role.findMany({
             select: {
                 id: true,
                 name: true,
@@ -59,8 +65,8 @@ export default class RolesService {
         return roles as RoleResponseDto[];
     }
 
-    static async updateRole(id: string, data: CreateRoleDto) {
-        const role = await prisma.role.findUnique({
+    async updateRole(id: string, data: CreateRoleDto) {
+        const role = await this.prisma.role.findUnique({
             where: {
                 id,
             },
@@ -70,7 +76,7 @@ export default class RolesService {
             throw new Error("Role not found");
         }
 
-        const updatedRole = await prisma.role.update({
+        const updatedRole = await this.prisma.role.update({
             where: {
                 id,
             },
@@ -86,8 +92,8 @@ export default class RolesService {
         return updatedRole as RoleResponseDto;
     }
 
-    static async deleteRole(id: string) {
-        const role = await prisma.role.findUnique({
+    async deleteRole(id: string) {
+        const role = await this.prisma.role.findUnique({
             where: {
                 id,
             },
@@ -97,7 +103,7 @@ export default class RolesService {
             throw new Error("Role not found");
         }
 
-        await prisma.role.delete({
+        await this.prisma.role.delete({
             where: {
                 id,
             },
@@ -106,8 +112,8 @@ export default class RolesService {
         return;
     }
 
-    static async getRoleByName(name: string) {
-        const role = await prisma.role.findFirst({
+    async getRoleByName(name: string) {
+        const role = await this.prisma.role.findFirst({
             where: {
                 name,
             },
@@ -124,8 +130,8 @@ export default class RolesService {
         return role as RoleResponseDto;
     }
 
-    static async getRoleUsers(id: string) {
-        const users = await prisma.user.findMany({
+    async getRoleUsers(id: string) {
+        const users = await this.prisma.user.findMany({
             where: {
                 roleId: id,
             },
