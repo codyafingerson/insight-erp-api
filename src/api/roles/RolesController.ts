@@ -2,7 +2,14 @@ import { Request, Response } from "express";
 import RolesService from "./RolesService";
 import { CreateRoleDto } from "./RolesDto";
 
+/**
+ * RolesController class handles role-related requests.
+ */
 export default class RolesController {
+    /**
+     * RolesController constructor.
+     * @param {RolesService} rolesService - The service layer for roles.
+     */
     constructor(private readonly rolesService: RolesService) {
         this.rolesService = rolesService;
 
@@ -13,7 +20,13 @@ export default class RolesController {
         this.deleteRole = this.deleteRole.bind(this);
     }
 
-    async createRole(req: Request, res: Response) {
+    /**
+    * Creates a new role.
+    * @param {Request} req - The Express request object.
+    * @param {Response} res - The Express response object.
+    * @returns {Promise<void>}
+    */
+    async createRole(req: Request, res: Response): Promise<void> {
         try {
             const { name, description } = req.body;
             const data: CreateRoleDto = { name, description };
@@ -30,7 +43,13 @@ export default class RolesController {
         }
     }
 
-    async getRoleById(req: Request, res: Response) {
+    /**
+     * Gets a role by ID.
+     * @param {Request} req - The Express request object.
+     * @param {Response} res - The Express response object.
+     * @returns {Promise<void>}
+     */
+    async getRoleById(req: Request, res: Response): Promise<void> {
         try {
             const { id } = req.params;
 
@@ -45,7 +64,13 @@ export default class RolesController {
         }
     }
 
-    async getAllRoles(req: Request, res: Response) {
+    /**
+     * Gets all roles.
+     * @param {Request} req - The Express request object.
+     * @param {Response} res - The Express response object.
+     * @returns {Promise<void>}
+     */
+    async getAllRoles(req: Request, res: Response): Promise<void> {
         try {
             const roles = await this.rolesService.getAllRoles();
             res.status(200).json(roles);
@@ -55,7 +80,13 @@ export default class RolesController {
         }
     }
 
-    async updateRole(req: Request, res: Response) {
+    /**
+    * Updates a role.
+    * @param {Request} req - The Express request object.
+    * @param {Response} res - The Express response object.
+    * @returns {Promise<void>}
+    */
+    async updateRole(req: Request, res: Response): Promise<void> {
         try {
             const role = await this.rolesService.updateRole(req.params.id, req.body);
             res.status(200).json(role);
@@ -65,6 +96,12 @@ export default class RolesController {
         }
     }
 
+    /**
+    * Deletes a role.
+    * @param {Request} req - The Express request object.
+    * @param {Response} res - The Express response object.
+    * @returns {Promise<void>}
+    */
     async deleteRole(req: Request, res: Response) {
         try {
             await this.rolesService.deleteRole(req.params.id);

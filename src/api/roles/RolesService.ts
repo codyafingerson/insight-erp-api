@@ -2,14 +2,23 @@ import prisma from "../../config/prisma";
 import { UserResponseDto } from "../users/UsersDto";
 import { CreateRoleDto, RoleResponseDto } from "./RolesDto";
 
+/**
+ * RolesService class handles role-related data operations with Prisma.
+ */
 export default class RolesService {
     private prisma: typeof prisma;
 
     constructor() {
         this.prisma = prisma;
     }
-    
-    async createRole(data: CreateRoleDto) {
+
+    /**
+    * Creates a new role.
+    * @param {CreateRoleDto} data - The role data.
+    * @returns {Promise<RoleResponseDto>} - The created role.
+    * @throws {Error} - If a role with the same name already exists.
+    */
+    async createRole(data: CreateRoleDto): Promise<RoleResponseDto> {
         const roleExists = await this.prisma.role.findFirst({
             where: {
                 name: data.name,
@@ -35,7 +44,13 @@ export default class RolesService {
         return createdRole as RoleResponseDto;
     }
 
-    async getRoleById(id: string) {
+    /**
+     * Retrieves a role by its ID.
+     * @param {string} id - The role ID.
+     * @returns {Promise<RoleResponseDto>} - The role object.
+     * @throws {Error} - If the role is not found.
+     */
+    async getRoleById(id: string): Promise<RoleResponseDto> {
         const role = await this.prisma.role.findUnique({
             where: {
                 id,
@@ -53,7 +68,11 @@ export default class RolesService {
         return role as RoleResponseDto;
     }
 
-    async getAllRoles() {
+    /**
+     * Retrieves all roles.
+     * @returns {Promise<RoleResponseDto[]>} - An array of role objects.
+     */
+    async getAllRoles(): Promise<RoleResponseDto[]> {
         const roles = await this.prisma.role.findMany({
             select: {
                 id: true,
@@ -65,7 +84,15 @@ export default class RolesService {
         return roles as RoleResponseDto[];
     }
 
-    async updateRole(id: string, data: CreateRoleDto) {
+
+    /**
+     * Updates a role with new data.
+     * @param {string} id - The role ID.
+     * @param {CreateRoleDto} data - The updated role data.
+     * @returns {Promise<RoleResponseDto>} - The updated role object.
+     * @throws {Error} - If the role is not found.
+     */
+    async updateRole(id: string, data: CreateRoleDto): Promise<RoleResponseDto> {
         const role = await this.prisma.role.findUnique({
             where: {
                 id,
@@ -92,7 +119,14 @@ export default class RolesService {
         return updatedRole as RoleResponseDto;
     }
 
-    async deleteRole(id: string) {
+    /**
+     * Updates a role with new data.
+     * @param {string} id - The role ID.
+     * @param {CreateRoleDto} data - The updated role data.
+     * @returns {Promise<RoleResponseDto>} - The updated role object.
+     * @throws {Error} - If the role is not found.
+     */
+    async deleteRole(id: string): Promise<RoleResponseDto> {
         const role = await this.prisma.role.findUnique({
             where: {
                 id,
@@ -112,7 +146,13 @@ export default class RolesService {
         return;
     }
 
-    async getRoleByName(name: string) {
+    /**
+    * Retrieves a role by its name.
+    * @param {string} name - The role name.
+    * @returns {Promise<RoleResponseDto>} - The role object.
+    * @throws {Error} - If the role is not found.
+    */
+    async getRoleByName(name: string): Promise<RoleResponseDto> {
         const role = await this.prisma.role.findFirst({
             where: {
                 name,
@@ -130,7 +170,12 @@ export default class RolesService {
         return role as RoleResponseDto;
     }
 
-    async getRoleUsers(id: string) {
+    /**
+     * Retrieves all users associated with a specific role.
+     * @param {string} id - The role ID.
+     * @returns {Promise<UserResponseDto[]>} - An array of user objects.
+     */
+    async getRoleUsers(id: string): Promise<UserResponseDto[]> {
         const users = await this.prisma.user.findMany({
             where: {
                 roleId: id,

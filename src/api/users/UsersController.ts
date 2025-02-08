@@ -2,7 +2,13 @@ import { Request, Response } from "express";
 import UserService from "./UsersService";
 import { CreateUserDto, UpdateUserDto } from "./UsersDto";
 
+/**
+ * UserController class handles user-related requests.
+ */
 export default class UserController {
+    /**
+     * @param {UserService} userService - The UserService instance.
+     */
     constructor(private readonly userService: UserService) {
         this.userService = userService;
 
@@ -13,7 +19,13 @@ export default class UserController {
         this.deleteUser = this.deleteUser.bind(this);
     }
 
-    async createUser(req: Request, res: Response) {
+    /**
+     * Creates a new user.
+     * @param {Request} req - The Express request object.
+     * @param {Response} res - The Express response object.
+     * @returns {Promise<void>}
+     */
+    async createUser(req: Request, res: Response): Promise<void> {
         try {
             const { isActive = true, roleId, name, username, email, password } = req.body;
             const data: CreateUserDto = { isActive, roleId, name, username, email, password };
@@ -25,7 +37,13 @@ export default class UserController {
         }
     }
 
-    async updateUser(req: Request, res: Response) {
+    /**
+     * Updates a user.
+     * @param {Request} req - The Express request object.
+     * @param {Response} res - The Express response object.
+     * @returns {Promise<void>}
+     */
+    async updateUser(req: Request, res: Response): Promise<void> {
         try {
             const { id } = req.params;
             const { isActive, roleId, name, username, email, password } = req.body;
@@ -38,7 +56,13 @@ export default class UserController {
         }
     }
 
-    async getAllUsers(req: Request, res: Response) {
+    /**
+     * Gets all users.
+     * @param {Request} req - The Express request object.
+     * @param {Response} res - The Express response object.
+     * @returns {Promise<void>}
+     */
+    async getAllUsers(req: Request, res: Response): Promise<void> {
         try {
             const users = await this.userService.getAllUsers();
 
@@ -48,7 +72,13 @@ export default class UserController {
         }
     }
 
-    async getUserById(req: Request, res: Response) {
+    /**
+     * Gets a user by ID.
+     * @param {Request} req - The Express request object.
+     * @param {Response} res - The Express response object.
+     * @returns {Promise<void>}
+     */
+    async getUserById(req: Request, res: Response): Promise<void> {
         try {
             const { id } = req.params;
             const user = await this.userService.getUserById(id);
@@ -59,7 +89,13 @@ export default class UserController {
         }
     }
 
-    async deleteUser(req: Request, res: Response) {
+     /**
+     * Deletes a user.
+     * @param {Request} req - The Express request object.
+     * @param {Response} res - The Express response object.
+     * @returns {Promise<void>}
+     */
+    async deleteUser(req: Request, res: Response): Promise<void> {
         try {
             const { id } = req.params;
             await this.userService.deleteUser(id);

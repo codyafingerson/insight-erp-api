@@ -2,6 +2,9 @@ import prisma from "../../config/prisma";
 import { hashPassword } from "../../utils/bcrypt";
 import { CreateUserDto, UpdateUserDto, UserResponseDto } from "./UsersDto";
 
+/**
+ * UserService class handles user-related operations.
+ */
 export default class UserService {
     private prisma: typeof prisma;
 
@@ -9,7 +12,13 @@ export default class UserService {
         this.prisma = prisma;
     }
 
-    async createUser(data: CreateUserDto) {
+    /**
+     * Creates a new user.
+     * @param {CreateUserDto} data - The user data.
+     * @returns {Promise<UserResponseDto>} - The created user.
+     * @throws {Error} - If the user already exists or the role does not exist.
+     */
+    async createUser(data: CreateUserDto): Promise<UserResponseDto> {
         const userExists = await this.prisma.user.findFirst({
             where: {
                 OR: [
@@ -58,7 +67,12 @@ export default class UserService {
         return createdUser as UserResponseDto;
     }
 
-    async getUserById(id: string) {
+    /**
+     * Gets a user by ID.
+     * @param {string} id - The user ID.
+     * @returns {Promise<UserResponseDto | null>} - The user, or null if not found.
+     */
+    async getUserById(id: string): Promise<UserResponseDto | null> {
         const user = await this.prisma.user.findUnique({
             where: {
                 id,
@@ -80,7 +94,13 @@ export default class UserService {
         return user as UserResponseDto;
     }
 
-    async getAllUsers(sortBy: string = 'name', order: 'asc' | 'desc' = 'asc') {
+    /**
+     * Gets all users.
+     * @param {string} sortBy - The field to sort by.
+     * @param {'asc' | 'desc'} order - The sort order.
+     * @returns {Promise<Array<UserResponseDto>>} - The list of users.
+     */
+    async getAllUsers(sortBy: string = 'name', order: 'asc' | 'desc' = 'asc'): Promise<Array<UserResponseDto>> {
         const users = await this.prisma.user.findMany({
             orderBy: {
                 [sortBy]: order,
@@ -102,7 +122,13 @@ export default class UserService {
         return users as Array<UserResponseDto>;
     }
 
-    async updateUser(id: string, user: UpdateUserDto) {
+    /**
+     * Updates a user.
+     * @param {string} id - The user ID.
+     * @param {UpdateUserDto} user - The user data to update.
+     * @returns {Promise<UserResponseDto>} - The updated user.
+     */
+    async updateUser(id: string, user: UpdateUserDto): Promise<UserResponseDto> {
         const updatedUser = await this.prisma.user.update({
             where: {
                 id,
@@ -127,7 +153,12 @@ export default class UserService {
         return updatedUser as UserResponseDto;
     }
 
-    async deleteUser(id: string) {
+        /**
+     * Deletes a user.
+     * @param {string} id - The user ID.
+     * @returns {Promise<UserResponseDto>} - The deleted user.
+     */
+    async deleteUser(id: string): Promise<UserResponseDto> {
         const deletedUser = await this.prisma.user.delete({
             where: {
                 id,
