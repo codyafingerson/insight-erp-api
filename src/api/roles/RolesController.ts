@@ -3,61 +3,74 @@ import RolesService from "./RolesService";
 import { CreateRoleDto } from "./RolesDto";
 
 export default class RolesController {
-    static async createRole(req: Request, res: Response) {
+    constructor(private readonly rolesService: RolesService) {
+        this.rolesService = rolesService;
+
+        this.createRole = this.createRole.bind(this);
+        this.getRoleById = this.getRoleById.bind(this);
+        this.getAllRoles = this.getAllRoles.bind(this);
+        this.updateRole = this.updateRole.bind(this);
+        this.deleteRole = this.deleteRole.bind(this);
+    }
+
+    async createRole(req: Request, res: Response) {
         try {
             const { name, description } = req.body;
             const data: CreateRoleDto = { name, description };
 
-            if(!name) {
+            if (!name) {
                 res.status(400).json({ error: "Role name is required." });
             }
-            
-            const role = await RolesService.createRole(data);
-            
+
+            const role = await this.rolesService.createRole(data);
+
             res.status(201).json(role);
         } catch (error) {
             res.status(400).json({ error: error.message });
         }
     }
 
-    static async getRoleById(req: Request, res: Response) {
+    async getRoleById(req: Request, res: Response) {
         try {
             const { id } = req.params;
 
-            if(!id) {
+            if (!id) {
                 res.status(400).json({ error: "No ID provided." });
             }
 
-            const role = await RolesService.getRoleById(id);
+            const role = await this.rolesService.getRoleById(id);
             res.status(200).json(role);
         } catch (error) {
             res.status(404).json({ error: error.message });
         }
     }
 
-    static async getAllRoles(req: Request, res: Response) {
+    async getAllRoles(req: Request, res: Response) {
         try {
-            const roles = await RolesService.getAllRoles();
+            const roles = await this.rolesService.getAllRoles();
             res.status(200).json(roles);
         } catch (error) {
+            console.error(error);
             res.status(500).json({ error: error.message });
         }
     }
 
-    static async updateRole(req: Request, res: Response) {
+    async updateRole(req: Request, res: Response) {
         try {
-            const role = await RolesService.updateRole(req.params.id, req.body);
+            const role = await this.rolesService.updateRole(req.params.id, req.body);
             res.status(200).json(role);
         } catch (error) {
+            console.log(error);
             res.status(404).json({ error: error.message });
         }
     }
 
-    static async deleteRole(req: Request, res: Response) {
+    async deleteRole(req: Request, res: Response) {
         try {
-            await RolesService.deleteRole(req.params.id);
+            await this.rolesService.deleteRole(req.params.id);
             res.status(204).send();
         } catch (error) {
+            console.log(error);
             res.status(404).json({ error: error.message });
         }
     }
