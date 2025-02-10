@@ -1,7 +1,6 @@
 import prisma from "../../config/prisma";
 import { UserResponseDto } from "../users/UsersDto";
 import { CreateRoleDto, RoleResponseDto } from "./RolesDto";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 /**
  * RolesService class handles role-related data operations with Prisma.
@@ -78,11 +77,7 @@ export default class RolesService {
                 select: { id: true, name: true, description: true },
             });
         } catch (error) {
-            if (error instanceof Error) {
-                throw new Error(`Role with ID "${id}" not found.`);
-            }
-
-            throw error;
+            throw new Error(`Role with ID "${id}" not found.`);
         }
     }
 
@@ -97,9 +92,10 @@ export default class RolesService {
                 where: { id },
             });
         } catch (error) {
-            if (error instanceof PrismaClientKnownRequestError && error.code === "P2025") {
+            if (error instanceof Error) {
                 throw new Error(`Role with ID "${id}" not found.`);
             }
+
             throw error;
         }
     }
@@ -139,7 +135,7 @@ export default class RolesService {
                 role: {
                     select: { id: true, name: true },
                 },
-            },
+            }
         });
     }
 }
