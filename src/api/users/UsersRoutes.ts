@@ -7,12 +7,15 @@ const router = Router();
 const userService = new UserService();
 const userController = new UserController(userService);
 
+// middleware
+import { requirePermission } from "../../middlewares/requirePermission";
+
 /**
  * @route POST /api/users
  * @description Creates a new user.
  * @access Private
  */
-router.post("/", userController.createUser);
+router.post("/", requirePermission('create_user'), userController.createUser);
 
 /**
  * @route PUT /api/users/:id
