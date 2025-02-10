@@ -36,3 +36,77 @@ model Permission {
   // Implicit many-to-many with Role
   roles       Role[]
 }
+
+model Department {
+  id   String  @id @default(cuid())
+  name String  @unique
+  description String?
+
+  employees Employee[]
+}
+
+/// Represents the status of an employee.
+enum Status {
+  ACTIVE    @map("Active")
+  INACTIVE  @map("Inactive")
+  SUSPENDED @map("Suspended")
+}
+
+/// Represents the type of employment.
+enum EmploymentType {
+  FULL_TIME   @map("Full-Time")
+  PART_TIME   @map("Part-Time")
+  CONTRACT    @map("Contract")
+  INTERNSHIP  @map("Internship")
+}
+
+/// Represents the pay structure in the compensation info.
+enum PayStructure {
+  HOURLY     @map("Hourly")
+  SALARY     @map("Salary")
+  COMMISSION @map("Commission")
+}
+
+model Employee {
+  id                  String           @id @default(uuid())
+  status              Status           @default(ACTIVE)
+  firstName           String
+  lastName            String
+  email               String           @unique
+  position            String
+
+  // Relation to the Department model.
+  departmentId        String
+  department          Department       @relation(fields: [departmentId], references: [id])
+
+  phoneNumber         String
+  address             String
+  dateOfBirth         DateTime
+  startDate           DateTime
+  endDate             DateTime?
+
+  employmentType      EmploymentType
+
+  // Self–relation: an employee may have a manager.
+  managerId           String?
+  manager             Employee?        @relation("EmployeeManager", fields: [managerId], references: [id])
+  // Back–relation: list of employees reporting to this manager.
+  subordinates        Employee[]       @relation("EmployeeManager")
+
+  // Flattened fields for emergency contact.
+  emergencyContactName         String?
+  emergencyContactRelationship String?
+  emergencyContactPhoneNumber  String?
+
+  // Flattened fields for compensation (required).
+  compensationSalary         Float
+  compensationPayStructure   PayStructure
+
+  // Flattened fields for time off benefits.
+  timeOffVacationDays        Int?
+  timeOffSickDays            Int?
+  timeOffPersonalDays        Int?
+
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+}
