@@ -12,6 +12,7 @@ import RolesRoutes from './api/roles/RolesRoutes';
 import UsersRoutes from './api/users/UsersRoutes';
 import AuthRoutes from './api/auth/AuthRoutes';
 import DepartmentsRoutes from './api/departments/DepartmentsRoutes';
+import EmployeesRoutes from './api/employees/EmployeesRoutes';
 
 class Server {
     private app: Application;
@@ -87,6 +88,7 @@ class Server {
         this.app.use('/api/roles', RolesRoutes);
         this.app.use('/api/users', UsersRoutes);
         this.app.use('/api/departments', DepartmentsRoutes);
+        this.app.use('/api/employees', EmployeesRoutes);
     }
 }
 
