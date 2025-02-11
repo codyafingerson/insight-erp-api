@@ -22,6 +22,13 @@ router.post("/", rolesController.createRole);
 router.get("/", rolesController.getAllRoles);
 
 /**
+ * @route GET /api/roles/permissions
+ * @description Retrieves all permissions.
+ * @access Private
+ */
+router.get("/permissions", rolesController.getAllPermissions);
+
+/**
  * @route GET /api/roles/:id
  * @description Retrieves a role by ID.
  * @access Private
