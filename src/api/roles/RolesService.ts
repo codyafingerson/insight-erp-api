@@ -1,6 +1,6 @@
 import prisma from "../../config/prisma";
 import { UserResponseDto } from "../users/UsersDto";
-import { CreateRoleDto, RoleResponseDto } from "./RolesDto";
+import { CreateRoleDto, RoleResponseDto, UpdateRoleDto } from "./RolesDto";
 
 /**
  * RolesService class handles role-related data operations with Prisma.
@@ -23,12 +23,36 @@ export default class RolesService {
             throw new Error(`Role with name "${data.name}" already exists.`);
         }
 
+        // Validate permissions exist
+        if (data.permissions) {
+            const existingPermissions = await this.prisma.permission.findMany({
+                where: {
+                    id: {
+                        in: data.permissions.map(p => p.id)
+                    }
+                }
+            });
+
+            if (existingPermissions.length !== data.permissions.length) {
+                throw new Error("One or more permissions do not exist.");
+            }
+        }
+
         return await this.prisma.role.create({
-            data,
+            data: {
+                name: data.name,
+                description: data.description,
+                permissions: {
+                    connect: data.permissions?.map(p => ({ id: p.id }))
+                }
+            },
             select: {
                 id: true,
                 name: true,
                 description: true,
+                permissions: {
+                    select: { id: true, name: true },
+                }
             },
         });
     }
@@ -42,7 +66,7 @@ export default class RolesService {
     async getRoleById(id: string): Promise<RoleResponseDto> {
         const role = await this.prisma.role.findUnique({
             where: { id },
-            select: { id: true, name: true, description: true },
+            select: { id: true, name: true, description: true, permissions: { select: { id: true, name: true } } },
         });
 
         if (!role) {
@@ -58,7 +82,7 @@ export default class RolesService {
      */
     async getAllRoles(): Promise<RoleResponseDto[]> {
         return await this.prisma.role.findMany({
-            select: { id: true, name: true, description: true },
+            select: { id: true, isEditable: true, name: true, description: true, permissions: { select: { id: true, name: true } } },
         });
     }
 
@@ -69,12 +93,53 @@ export default class RolesService {
      * @returns {Promise<RoleResponseDto>} - The updated role object.
      * @throws {Error} - If the role is not found.
      */
-    async updateRole(id: string, data: CreateRoleDto): Promise<RoleResponseDto> {
+    async updateRole(id: string, data: UpdateRoleDto): Promise<RoleResponseDto> {
         try {
+            const foundRole = await this.prisma.role.findUnique({
+                where: { id },
+                select: { id: true, isEditable: true },
+            });
+
+            if (!foundRole) {
+                throw new Error(`Role with ID "${id}" not found.`);
+            }
+
+            if(!foundRole.isEditable) {
+                throw new Error(`Role with ID "${id}" is not editable.`);
+            }
+
+            // Validate permissions exist
+            if (data.permissions) {
+                const existingPermissions = await this.prisma.permission.findMany({
+                    where: {
+                        id: {
+                            in: data.permissions.map(p => p.id)
+                        }
+                    }
+                });
+
+                if (existingPermissions.length !== data.permissions.length) {
+                    throw new Error("One or more permissions do not exist.");
+                }
+            }
+
             return await this.prisma.role.update({
                 where: { id },
-                data,
-                select: { id: true, name: true, description: true },
+                data: {
+                    name: data.name,
+                    description: data.description,
+                    permissions: {
+                        set: data.permissions.map(p => ({ id: p.id }))
+                    }
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    description: true,
+                    permissions: {
+                        select: { id: true, name: true },
+                    }
+                },
             });
         } catch (error) {
             throw new Error(`Role with ID "${id}" not found.`);
@@ -109,7 +174,7 @@ export default class RolesService {
     async getRoleByName(name: string): Promise<RoleResponseDto> {
         const role = await this.prisma.role.findUnique({
             where: { name },
-            select: { id: true, name: true, description: true },
+            select: { id: true, name: true, description: true, permissions: { select: { id: true, name: true } } },
         });
 
         if (!role) {
@@ -136,6 +201,16 @@ export default class RolesService {
                     select: { id: true, name: true },
                 },
             }
+        });
+    }
+
+    /**
+     * Retrieves all permissions.
+     * @returns An array of permission objects.
+     */
+    async getAllPermissions() {
+        return await this.prisma.permission.findMany({
+            select: { id: true, name: true, description: true },
         });
     }
 }
