@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, Permission } from '@prisma/client'
 import bcrypt from 'bcrypt'
 import { parseArgs } from 'node:util'
 
@@ -8,7 +8,6 @@ const options = {
   environment: { type: 'string' as const },
 }
 
-// Upfront definitions for the Permissions and the Roles you want to seed.
 const permissionsData = [
   // Users permissions
   { name: 'create_user', description: 'Permission to create a user' },
@@ -81,9 +80,9 @@ async function seedPermissions() {
  * Upserts each role defined in rolesData, connecting them with
  * the appropriate Permission records.
  *
- * @param {import('@prisma/client').Permission[]} allPermissions
+ * @param {Permission[]} allPermissions
  */
-async function seedRoles(allPermissions) {
+async function seedRoles(allPermissions: Permission[]) {
   return Promise.all(
     rolesData.map(async (role) => {
       // Filter the permissions relevant to this role
