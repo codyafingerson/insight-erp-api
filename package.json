@@ -8,7 +8,8 @@
     "dev": "nodemon src/Server.ts",
     "build": "tsc -p .",
     "migrate": "npx prisma migrate dev",
-    "seed": "npx prisma db seed"
+    "seed:dev": "npx prisma db seed -- --environment development",
+    "seed:prod": "npx prisma db seed -- --environment production"
   },
   "repository": {
     "type": "git",
