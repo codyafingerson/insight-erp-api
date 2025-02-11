@@ -44,11 +44,13 @@ const permissionsData = Object.values(PermissionName).map(name => ({
 const rolesData = [
     {
         name: 'SuperAdmin',
+        isEditable: false,
         description: 'Role with all permissions',
         permissionNames: permissionsData.map((p) => p.name), // all
     },
     {
         name: 'Manager',
+        isEditable: false,
         description: 'Role with relevant permissions for managing employees and departments',
         permissionNames: [
             'create_employee',
@@ -62,6 +64,7 @@ const rolesData = [
     },
     {
         name: 'Employee',
+        isEditable: false,
         description: 'Role with relevant permissions for employees',
         permissionNames: ['read_all_employees', 'read_all_departments', 'read_all_roles'],
     },
@@ -100,6 +103,7 @@ async function seedRoles(allPermissions: Permission[]) {
             return prisma.role.upsert({
                 where: { name: role.name },
                 update: {
+                    isEditable: role.isEditable,
                     permissions: {
                         // Overwrite the role's permissions in an update scenario
                         set: filteredPermissions.map((perm) => ({ id: perm.id })),

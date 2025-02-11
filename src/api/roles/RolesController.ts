@@ -18,6 +18,7 @@ export default class RolesController {
         this.getAllRoles = this.getAllRoles.bind(this);
         this.updateRole = this.updateRole.bind(this);
         this.deleteRole = this.deleteRole.bind(this);
+        this.getAllPermissions = this.getAllPermissions.bind(this);
     }
 
     /**
@@ -28,8 +29,8 @@ export default class RolesController {
     */
     async createRole(req: Request, res: Response): Promise<void> {
         try {
-            const { name, description } = req.body;
-            const data: CreateRoleDto = { name, description };
+            const { name, description, permissions } = req.body;
+            const data: CreateRoleDto = { name, description, permissions };
 
             if (!name) {
                 res.status(400).json({ error: "Role name is required." });
@@ -109,6 +110,21 @@ export default class RolesController {
         } catch (error) {
             console.log(error);
             res.status(404).json({ error: error.message });
+        }
+    }
+
+    /**
+     * Retrieves all permissions.
+     * @param {Request} req - The Express request object.
+     * @param {Response} res - The Express response object.
+     */
+    async getAllPermissions(req: Request, res: Response) {
+        try {
+            const permissions = await this.rolesService.getAllPermissions();
+            res.status(200).json(permissions);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: error.message });
         }
     }
 }

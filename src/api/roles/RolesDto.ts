@@ -4,6 +4,16 @@
 export interface CreateRoleDto {
     name: string;
     description?: string;
+    permissions?: { id: string }[];
+}
+
+/**
+ * Update Role Data Transfer Object
+ */
+export interface UpdateRoleDto {
+    name?: string;
+    description?: string;
+    permissions?: { id: string }[];
 }
 
 /**
@@ -12,5 +22,6 @@ export interface CreateRoleDto {
 export interface RoleResponseDto {
     id: string;
     name: string;
-    description: string;
+    description?: string;
+    permissions?: { id: string; name: string }[];
 }
