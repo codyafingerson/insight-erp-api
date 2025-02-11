@@ -23,6 +23,7 @@ model Role {
   name        String       @unique
   description String?
   users       User[]
+  isEditable  Boolean @default(true)
 
   // Implicit many-to-many with Permission
   permissions Permission[]
