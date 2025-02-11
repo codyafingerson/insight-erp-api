@@ -67,6 +67,7 @@ export default class EmployeesService {
     async getEmployees() {
         const employees = await this.prisma.employee.findMany({
             select: {
+                id: true,
                 firstName: true,
                 lastName: true,
                 email: true,

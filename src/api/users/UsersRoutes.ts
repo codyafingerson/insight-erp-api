@@ -22,27 +22,27 @@ router.post("/", requirePermission('create_user'), userController.createUser);
  * @description Updates a user.
  * @access Private
  */
-router.put("/:id", userController.updateUser);
+router.put("/:id", requirePermission('update_user'), userController.updateUser);
 
 /**
  * @route GET /api/users
  * @description Gets all users.
  * @access Private
  */
-router.get("/", userController.getAllUsers);
+router.get("/", requirePermission('read_all_users'), userController.getAllUsers);
 
 /**
  * @route GET /api/users/:id
  * @description Gets a user by ID.
  * @access Private
  */
-router.get("/:id", userController.getUserById);
+router.get("/:id", requirePermission('read_all_users'), userController.getUserById);
 
 /**
  * @route DELETE /api/users/:id
  * @description Deletes a user.
  * @access Private
  */
-router.delete("/:id", userController.deleteUser);
+router.delete("/:id", requirePermission('delete_user'), userController.deleteUser);
 
 export default router;
