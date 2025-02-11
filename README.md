@@ -58,7 +58,7 @@ npm run seed
 > - password: `password123`
 
 ## Routes
-See the [Postman collection] for more details on the available routes.
+See the Postman collection for more details on the available routes.
 > Note: The collection is a work in progress and will be updated as new features are added.
 > If you do not have access to the collection, please reach out to the project owner!
 
