@@ -24,7 +24,6 @@ class Server {
     }
 
     public start() {
-        // Declaring this here to ensure that it is the last middleware to be executed!
         this.app.use(errorHandler);
         const server = this.app.listen(this.app.get('port'), () => {
             console.log(`Server running on port ${this.app.get('port')}`);

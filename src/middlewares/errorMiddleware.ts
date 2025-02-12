@@ -1,19 +1,12 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 
-/**
- * Handles errors in the server application.
- * @param err The error to handle.
- * @param req The request.
- * @param res The response.
- * @param next The next function.
- */
 export default function errorHandler(err: any, req: Request, res: Response, next: NextFunction) {
-    const status = res.statusCode ? res.statusCode : 500;
+  console.error(err.stack);
 
-    res.status(status);
+  const status = err.status || 500;
 
-    res.json({
-        message: err.message,
-        stack: process.env.NODE_ENV === 'production' ? null : err.stack // Only show the stack trace in development for security reasons.
-    })
+  res.status(status).json({
+    message: err.message,
+    stack: process.env.NODE_ENV === "production" ? null : err.stack,
+  });
 }

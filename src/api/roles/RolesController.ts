@@ -1,6 +1,7 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import RolesService from "./RolesService";
 import { CreateRoleDto } from "./RolesDto";
+import ApiError from "../../utils/ApiError";
 
 /**
  * RolesController class handles role-related requests.
@@ -25,22 +26,23 @@ export default class RolesController {
     * Creates a new role.
     * @param {Request} req - The Express request object.
     * @param {Response} res - The Express response object.
+    * @param {NextFunction} next - The Express next function.
     * @returns {Promise<void>}
     */
-    async createRole(req: Request, res: Response): Promise<void> {
+    async createRole(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const { name, description, permissions } = req.body;
             const data: CreateRoleDto = { name, description, permissions };
 
             if (!name) {
-                res.status(400).json({ error: "Role name is required." });
+                return next(new ApiError(400, "Role name is required."));
             }
 
             const role = await this.rolesService.createRole(data);
 
             res.status(201).json(role);
-        } catch (error) {
-            res.status(400).json({ error: error.message });
+        } catch (error: any) {
+            next(error);
         }
     }
 
@@ -48,20 +50,21 @@ export default class RolesController {
      * Gets a role by ID.
      * @param {Request} req - The Express request object.
      * @param {Response} res - The Express response object.
+     * @param {NextFunction} next - The Express next function.
      * @returns {Promise<void>}
      */
-    async getRoleById(req: Request, res: Response): Promise<void> {
+    async getRoleById(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const { id } = req.params;
 
             if (!id) {
-                res.status(400).json({ error: "No ID provided." });
+                return next(new ApiError(400, "No ID provided."));
             }
 
             const role = await this.rolesService.getRoleById(id);
             res.status(200).json(role);
-        } catch (error) {
-            res.status(404).json({ error: error.message });
+        } catch (error: any) {
+            next(error);
         }
     }
 
@@ -69,15 +72,15 @@ export default class RolesController {
      * Gets all roles.
      * @param {Request} req - The Express request object.
      * @param {Response} res - The Express response object.
+     * @param {NextFunction} next - The Express next function.
      * @returns {Promise<void>}
      */
-    async getAllRoles(req: Request, res: Response): Promise<void> {
+    async getAllRoles(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const roles = await this.rolesService.getAllRoles();
             res.status(200).json(roles);
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: error.message });
+        } catch (error: any) {
+            next(new ApiError(500, error.message));
         }
     }
 
@@ -85,15 +88,15 @@ export default class RolesController {
     * Updates a role.
     * @param {Request} req - The Express request object.
     * @param {Response} res - The Express response object.
+    * @param {NextFunction} next - The Express next function.
     * @returns {Promise<void>}
     */
-    async updateRole(req: Request, res: Response): Promise<void> {
+    async updateRole(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const role = await this.rolesService.updateRole(req.params.id, req.body);
             res.status(200).json(role);
-        } catch (error) {
-            console.log(error);
-            res.status(404).json({ error: error.message });
+        } catch (error: any) {
+            next(new ApiError(404, error.message));
         }
     }
 
@@ -101,15 +104,15 @@ export default class RolesController {
     * Deletes a role.
     * @param {Request} req - The Express request object.
     * @param {Response} res - The Express response object.
+    * @param {NextFunction} next - The Express next function.
     * @returns {Promise<void>}
     */
-    async deleteRole(req: Request, res: Response) {
+    async deleteRole(req: Request, res: Response, next: NextFunction) {
         try {
             await this.rolesService.deleteRole(req.params.id);
             res.status(204).send();
-        } catch (error) {
-            console.log(error);
-            res.status(404).json({ error: error.message });
+        } catch (error: any) {
+            next(new ApiError(404, error.message));
         }
     }
 
@@ -117,14 +120,14 @@ export default class RolesController {
      * Retrieves all permissions.
      * @param {Request} req - The Express request object.
      * @param {Response} res - The Express response object.
+     * @param {NextFunction} next - The Express next function.
      */
-    async getAllPermissions(req: Request, res: Response) {
+    async getAllPermissions(req: Request, res: Response, next: NextFunction) {
         try {
             const permissions = await this.rolesService.getAllPermissions();
             res.status(200).json(permissions);
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: error.message });
+        } catch (error: any) {
+            next(new ApiError(500, error.message));
         }
     }
 }

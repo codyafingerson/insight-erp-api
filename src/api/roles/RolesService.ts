@@ -1,6 +1,7 @@
 import prisma from "../../config/prisma";
 import { UserResponseDto } from "../users/UsersDto";
 import { CreateRoleDto, RoleResponseDto, UpdateRoleDto } from "./RolesDto";
+import ApiError from "../../utils/ApiError";
 
 /**
  * RolesService class handles role-related data operations with Prisma.
@@ -15,46 +16,53 @@ export default class RolesService {
     * @throws {Error} - If a role with the same name already exists.
     */
     async createRole(data: CreateRoleDto): Promise<RoleResponseDto> {
-        const existingRole = await this.prisma.role.findUnique({
-            where: { name: data.name },
-        });
-
-        if (existingRole) {
-            throw new Error(`Role with name "${data.name}" already exists.`);
-        }
-
-        // Validate permissions exist
-        if (data.permissions) {
-            const existingPermissions = await this.prisma.permission.findMany({
-                where: {
-                    id: {
-                        in: data.permissions.map(p => p.id)
-                    }
-                }
+        try {
+            const existingRole = await this.prisma.role.findUnique({
+                where: { name: data.name },
             });
 
-            if (existingPermissions.length !== data.permissions.length) {
-                throw new Error("One or more permissions do not exist.");
+            if (existingRole) {
+                throw new ApiError(400, `Role with name "${data.name}" already exists.`);
             }
-        }
 
-        return await this.prisma.role.create({
-            data: {
-                name: data.name,
-                description: data.description,
-                permissions: {
-                    connect: data.permissions?.map(p => ({ id: p.id }))
+            // Validate permissions exist
+            if (data.permissions) {
+                const existingPermissions = await this.prisma.permission.findMany({
+                    where: {
+                        id: {
+                            in: data.permissions.map(p => p.id)
+                        }
+                    }
+                });
+
+                if (existingPermissions.length !== data.permissions.length) {
+                    throw new ApiError(400, "One or more permissions do not exist.");
                 }
-            },
-            select: {
-                id: true,
-                name: true,
-                description: true,
-                permissions: {
-                    select: { id: true, name: true },
-                }
-            },
-        });
+            }
+
+            return await this.prisma.role.create({
+                data: {
+                    name: data.name,
+                    description: data.description,
+                    permissions: {
+                        connect: data.permissions?.map(p => ({ id: p.id }))
+                    }
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    description: true,
+                    permissions: {
+                        select: { id: true, name: true },
+                    }
+                },
+            });
+        } catch (error: any) {
+            if (error instanceof ApiError) {
+                throw error;
+            }
+            throw new ApiError(500, error.message);
+        }
     }
 
     /**
@@ -64,16 +72,23 @@ export default class RolesService {
      * @throws {Error} - If the role is not found.
      */
     async getRoleById(id: string): Promise<RoleResponseDto> {
-        const role = await this.prisma.role.findUnique({
-            where: { id },
-            select: { id: true, name: true, description: true, permissions: { select: { id: true, name: true } } },
-        });
+        try {
+            const role = await this.prisma.role.findUnique({
+                where: { id },
+                select: { id: true, name: true, description: true, permissions: { select: { id: true, name: true } } },
+            });
 
-        if (!role) {
-            throw new Error(`Role with ID "${id}" not found.`);
+            if (!role) {
+                throw new ApiError(404, `Role with ID "${id}" not found.`);
+            }
+
+            return role;
+        } catch (error: any) {
+            if (error instanceof ApiError) {
+                throw error;
+            }
+            throw new ApiError(500, error.message);
         }
-
-        return role;
     }
 
     /**
@@ -81,9 +96,13 @@ export default class RolesService {
      * @returns {Promise<RoleResponseDto[]>} - An array of role objects.
      */
     async getAllRoles(): Promise<RoleResponseDto[]> {
-        return await this.prisma.role.findMany({
-            select: { id: true, isEditable: true, name: true, description: true, permissions: { select: { id: true, name: true } } },
-        });
+        try {
+            return await this.prisma.role.findMany({
+                select: { id: true, isEditable: true, name: true, description: true, permissions: { select: { id: true, name: true } } },
+            });
+        } catch (error: any) {
+            throw new ApiError(500, error.message);
+        }
     }
 
     /**
@@ -101,11 +120,11 @@ export default class RolesService {
             });
 
             if (!foundRole) {
-                throw new Error(`Role with ID "${id}" not found.`);
+                throw new ApiError(404, `Role with ID "${id}" not found.`);
             }
 
-            if(!foundRole.isEditable) {
-                throw new Error(`Role with ID "${id}" is not editable.`);
+            if (!foundRole.isEditable) {
+                throw new ApiError(403, `Role with ID "${id}" is not editable.`);
             }
 
             // Validate permissions exist
@@ -119,7 +138,7 @@ export default class RolesService {
                 });
 
                 if (existingPermissions.length !== data.permissions.length) {
-                    throw new Error("One or more permissions do not exist.");
+                    throw new ApiError(400, "One or more permissions do not exist.");
                 }
             }
 
@@ -141,8 +160,11 @@ export default class RolesService {
                     }
                 },
             });
-        } catch (error) {
-            throw new Error(`Role with ID "${id}" not found.`);
+        } catch (error: any) {
+            if (error instanceof ApiError) {
+                throw error;
+            }
+            throw new ApiError(500, error.message);
         }
     }
 
@@ -153,15 +175,27 @@ export default class RolesService {
      */
     async deleteRole(id: string): Promise<void> {
         try {
+            const roleToDelete = await this.prisma.role.findUnique({
+                where: { id },
+                select: { id: true, isEditable: true },
+            });
+
+            if (!roleToDelete) {
+                throw new ApiError(404, `Role with ID "${id}" not found.`);
+            }
+
+            if (!roleToDelete.isEditable) {
+                throw new ApiError(403, `Role with ID "${id}" is not editable.`);
+            }
+
             await this.prisma.role.delete({
                 where: { id },
             });
-        } catch (error) {
-            if (error instanceof Error) {
-                throw new Error(`Role with ID "${id}" not found.`);
+        } catch (error: any) {
+            if (error instanceof ApiError) {
+                throw error;
             }
-
-            throw error;
+            throw new ApiError(500, error.message);
         }
     }
 
@@ -172,16 +206,23 @@ export default class RolesService {
     * @throws {Error} - If the role is not found.
     */
     async getRoleByName(name: string): Promise<RoleResponseDto> {
-        const role = await this.prisma.role.findUnique({
-            where: { name },
-            select: { id: true, name: true, description: true, permissions: { select: { id: true, name: true } } },
-        });
+        try {
+            const role = await this.prisma.role.findUnique({
+                where: { name },
+                select: { id: true, name: true, description: true, permissions: { select: { id: true, name: true } } },
+            });
 
-        if (!role) {
-            throw new Error(`Role with name "${name}" not found.`);
+            if (!role) {
+                throw new ApiError(404, `Role with name "${name}" not found.`);
+            }
+
+            return role;
+        } catch (error: any) {
+            if (error instanceof ApiError) {
+                throw error;
+            }
+            throw new ApiError(500, error.message);
         }
-
-        return role;
     }
 
     /**
@@ -190,18 +231,22 @@ export default class RolesService {
      * @returns {Promise<UserResponseDto[]>} - An array of user objects.
      */
     async getRoleUsers(id: string): Promise<UserResponseDto[]> {
-        return await this.prisma.user.findMany({
-            where: { roleId: id },
-            select: {
-                id: true,
-                name: true,
-                username: true,
-                email: true,
-                role: {
-                    select: { id: true, name: true },
-                },
-            }
-        });
+        try {
+            return await this.prisma.user.findMany({
+                where: { roleId: id },
+                select: {
+                    id: true,
+                    name: true,
+                    username: true,
+                    email: true,
+                    role: {
+                        select: { id: true, name: true },
+                    },
+                }
+            });
+        } catch (error: any) {
+            throw new ApiError(500, error.message);
+        }
     }
 
     /**
@@ -209,8 +254,12 @@ export default class RolesService {
      * @returns An array of permission objects.
      */
     async getAllPermissions() {
-        return await this.prisma.permission.findMany({
-            select: { id: true, name: true, description: true },
-        });
+        try {
+            return await this.prisma.permission.findMany({
+                select: { id: true, name: true, description: true },
+            });
+        } catch (error: any) {
+            throw new ApiError(500, error.message);
+        }
     }
 }

@@ -20,7 +20,7 @@ export default class DepartmentsService {
         });
 
         if (existingDepartment) {
-            throw new Error(`Department with name "${data.name}" already exists.`);
+            throw new Error(`Department with name ${data.name} already exists.`);
         }
 
         return await this.prisma.department.create({
