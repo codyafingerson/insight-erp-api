@@ -25,16 +25,11 @@ router.post("/", requirePermission("create_role"), rolesController.createRole);
 router.get("/", requirePermission("read_all_roles"), rolesController.getAllRoles);
 
 /**
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
-=======
 >>>>>>> bbca3aba4d87c15476eb25a50bb557585cfe7c7d
  * @route GET /api/roles/permissions
  * @description Retrieves all permissions.
  * @access Private
  */
-<<<<<<< HEAD
 router.get("/permissions", requirePermission("read_all_roles"), rolesController.getAllPermissions);
 
 /**
