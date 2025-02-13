@@ -14,15 +14,39 @@ export default class EmployeesService {
      * @returns A newly created employee.
      * @throws An error if an employee with the same email already exists.
      */
-    async createEmployee(employee: CreateEmployeeDto): Promise<EmployeeResponseDto> {
+    async createEmployee(employeeData: any): Promise<EmployeeResponseDto> {
         try {
             const existingEmployee = await this.prisma.employee.findUnique({
-                where: { email: employee.email },
+                where: { email: employeeData.email },
             });
 
             if (existingEmployee) {
-                throw new ApiError(400, `Employee with email "${employee.email}" already exists.`);
+                throw new ApiError(400, `Employee with email "${employeeData.email}" already exists.`);
             }
+
+            // Map the incoming data to the CreateEmployeeDto
+            const employee: CreateEmployeeDto = {
+                firstName: employeeData.firstName,
+                lastName: employeeData.lastName,
+                email: employeeData.email,
+                position: employeeData.position,
+                departmentId: employeeData.department,
+                phoneNumber: employeeData.phoneNumber,
+                address: employeeData.address,
+                dateOfBirth: new Date(employeeData.dateOfBirth),
+                startDate: new Date(employeeData.startDate),
+                endDate: employeeData.endDate ? new Date(employeeData.endDate) : undefined,
+                employmentType: employeeData.employmentType.toUpperCase().replace('-', '_') as any, // Convert "Full-Time" to "FULL_TIME"
+                managerId: employeeData.managerId,
+                emergencyContactName: employeeData.emergencyContact?.name,
+                emergencyContactRelationship: employeeData.emergencyContact?.relationship,
+                emergencyContactPhoneNumber: employeeData.emergencyContact?.phoneNumber,
+                compensationSalary: employeeData.compensation?.salary,
+                compensationPayStructure: employeeData.compensation?.payStructure.toUpperCase() as any, // Convert "Salary" to "SALARY"
+                timeOffVacationDays: employeeData.timeOffBenefits?.vacationDays,
+                timeOffSickDays: employeeData.timeOffBenefits?.sickDays,
+                timeOffPersonalDays: employeeData.timeOffBenefits?.personalDays,
+            };
 
             const newEmployee = await this.prisma.employee.create({
                 data: {
