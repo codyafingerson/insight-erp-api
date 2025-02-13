@@ -1,13 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 
-export function errorLogger(err: any, req: Request, res: Response, next: NextFunction) {
-  console.error(err);
-  next(err); // Pass error to the next middleware
-}
+export default function errorHandler(err: any, req: Request, res: Response, next: NextFunction) {
+  console.error(err.stack);
 
-export function errorResponder(err: any, req: Request, res: Response, next: NextFunction) {
-  const statusCode = err.statusCode || 500;
-  const message = err.message || "Internal Server Error";
+  const status = err.status || 500;
 
-  res.status(statusCode).json({ error: message });
+  res.status(status).json({
+    message: err.message,
+    stack: process.env.NODE_ENV === "production" ? null : err.stack,
+  });
 }

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import AuthService from "./AuthService";
 import passport from "passport";
+import ApiError from "../../utils/ApiError";
 
 /**
  * AuthController class handles authentication-related requests.
@@ -31,7 +32,7 @@ export default class AuthController {
             }
 
             if (!user) {
-                return res.status(400).json({ message: info.message });
+                return next(new ApiError(401, "Invalid credentials"));
             }
 
             req.logIn(user, (err) => {
@@ -50,11 +51,10 @@ export default class AuthController {
      * @param {Response} res - The Express response object.
      * @returns {Promise<void>}
      */
-    async logout(req: Request, res: Response): Promise<void> {
+    async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
         req.logout((err: any) => {
             if (err) {
-                console.log(err);
-                return res.status(500).json({ message: "Logout failed" });
+                return next(new ApiError(500, "Logout failed"));
             }
             return res.status(200).json({ success: true });
         });

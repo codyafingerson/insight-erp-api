@@ -1,6 +1,7 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import EmployeesService from "./EmployeesService";
 import { CreateEmployeeDto, EmployeeResponseDto } from "./EmployeesDto";
+import ApiError from "../../utils/ApiError";
 
 /**
  * EmployeesController class handles employee-related requests.
@@ -24,13 +25,14 @@ export default class EmployeesController {
      * Creates a new employee.
      * @param {Request} req - The request object.
      * @param {Response} res - The response object.
+     * @param {NextFunction} next - The next function.
      */
-    async createEmployee(req: Request, res: Response) {
+    async createEmployee(req: Request, res: Response, next: NextFunction) {
         try {
             const newEmployee = await this.employeesService.createEmployee(req.body as CreateEmployeeDto);
             res.status(201).json(newEmployee);
-        } catch (error) {
-            res.status(400).json({ message: error.message });
+        } catch (error: any) {
+            next(new ApiError(400, error.message));
         }
     }
 
@@ -38,14 +40,14 @@ export default class EmployeesController {
      * Retrieves all employees.
      * @param {Request} req - The request object.
      * @param {Response} res - The response object.
+     * @param {NextFunction} next - The next function.
      */
-    async getAllEmployees(req: Request, res: Response) {
+    async getAllEmployees(req: Request, res: Response, next: NextFunction) {
         try {
             const employees = await this.employeesService.getEmployees();
             res.status(200).json(employees);
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: error.message });
+        } catch (error: any) {
+            next(new ApiError(500, error.message));
         }
     }
 
@@ -53,14 +55,15 @@ export default class EmployeesController {
      * Retrieves an employee by ID.
      * @param {Request} req - The request object.
      * @param {Response} res - The response object.
+     * @param {NextFunction} next - The next function.
      */
-    async getEmployeeById(req: Request, res: Response) {
+    async getEmployeeById(req: Request, res: Response, next: NextFunction) {
         try {
             const { id } = req.params;
             const employee = await this.employeesService.getEmployeeById(id);
             res.status(200).json(employee);
-        } catch (error) {
-            res.status(400).json({ message: error.message });
+        } catch (error: any) {
+            next(new ApiError(400, error.message));
         }
     }
 
@@ -68,13 +71,14 @@ export default class EmployeesController {
      * Updates an employee.
      * @param {Request} req - The request object.
      * @param {Response} res - The response object.
+     * @param {NextFunction} next - The next function.
      */
-    async updateEmployee(req: Request, res: Response) {
+    async updateEmployee(req: Request, res: Response, next: NextFunction) {
         try {
             const updatedEmployee = await this.employeesService.updateEmployee(req.params.id, req.body);
             res.status(200).json(updatedEmployee);
-        } catch (error) {
-            res.status(400).json({ message: error.message });
+        } catch (error: any) {
+            next(new ApiError(400, error.message));
         }
     }
 
@@ -82,13 +86,14 @@ export default class EmployeesController {
      * Deletes an employee.
      * @param {Request} req - The request object.
      * @param {Response} res - The response object.
+     * @param {NextFunction} next - The next function.
      */
-    async deleteEmployee(req: Request, res: Response) {
+    async deleteEmployee(req: Request, res: Response, next: NextFunction) {
         try {
             await this.employeesService.deleteEmployee(req.params.id);
             res.status(204).end();
-        } catch (error) {
-            res.status(400).json({ message: error.message });
+        } catch (error: any) {
+            next(new ApiError(400, error.message));
         }
     }
 }

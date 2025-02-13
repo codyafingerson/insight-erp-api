@@ -1,4 +1,5 @@
 import prisma from "../../config/prisma";
+import ApiError from "../../utils/ApiError";
 import { comparePasswords } from "../../utils/bcrypt";
 import { CredentialsDto } from "./AuthDto";
 
@@ -19,13 +20,13 @@ export default class AuthService {
         });
 
         if (!user) {
-            return null;
+            throw new ApiError(401, 'Invalid credentials');
         }
 
         const passwordMatch = await comparePasswords(credentials.password, user.password);
 
         if (!passwordMatch) {
-            return null;
+            throw new ApiError(401, 'Invalid credentials');
         }
 
         return user;
