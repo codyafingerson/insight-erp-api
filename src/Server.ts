@@ -56,8 +56,14 @@ class Server {
         this.app.use(helmet());
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: false }));
-        this.app.use(morgan('dev'));
         this.app.use(cookieParser());
+
+        if (process.env.NODE_ENV === 'production') {
+            this.app.use(morgan('combined'));
+        } else {
+            // Development environment with more verbose logs
+            this.app.use(morgan('dev'));
+        }
 
         this.app.use(
             session({
