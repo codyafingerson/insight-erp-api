@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/Server.js",
     "dev": "nodemon src/Server.ts",
-    "build": "tsc -p .",
+    "build": "tsc",
     "migrate": "npx prisma migrate dev",
     "seed:dev": "npx prisma db seed -- --environment development",
     "seed:prod": "npx prisma db seed -- --environment production"
