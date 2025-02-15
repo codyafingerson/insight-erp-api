@@ -6,6 +6,8 @@ import helmet from 'helmet';
 import session from 'express-session';
 import passport from './config/passport';
 import errorHandler from './middlewares/errorMiddleware';
+import { RedisStore } from 'connect-redis';
+import { redisClient } from './config/redis';
 
 // Controllers
 import RolesRoutes from './api/roles/RolesRoutes';
@@ -23,7 +25,7 @@ class Server {
         this.routes();
     }
 
-    public start() {
+    public async start() {
         this.app.use(errorHandler);
         const server = this.app.listen(this.app.get('port'), () => {
             console.log(`Server running on port ${this.app.get('port')}`);
@@ -47,16 +49,17 @@ class Server {
         });
     }
 
-    private config() {
+    private async config() {
         dotenv.config();
+
         this.app.set('port', process.env.PORT || 3000);
         this.app.disable('x-powered-by');
 
         // Middleware
         this.app.use(helmet());
+        this.app.use(cookieParser());
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: false }));
-        this.app.use(cookieParser());
 
         if (process.env.NODE_ENV === 'production') {
             this.app.use(morgan('combined'));
@@ -65,11 +68,26 @@ class Server {
             this.app.use(morgan('dev'));
         }
 
+        // Initialize Redis store using the ioredis client
+        const redisStore = new RedisStore({
+            client: redisClient,
+            prefix: 'insight-erp:',
+        });
+
+        // Session configuration
+        const sessionSecret = process.env.SESSION_SECRET;
+        if (!sessionSecret) {
+            console.error('SESSION_SECRET is not defined. Exiting.');
+            process.exit(1);
+        }
+
         this.app.use(
             session({
-                secret: process.env.SESSION_SECRET as string,
+                store: redisStore,
+                secret: sessionSecret,
                 resave: false,
                 saveUninitialized: false,
+                name: 'insight-erp',
                 cookie: {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
