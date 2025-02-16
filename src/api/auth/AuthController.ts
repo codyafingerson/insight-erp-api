@@ -40,13 +40,7 @@ export default class AuthController {
                     return next(err);
                 }
 
-                // Regenerate session after successful login
-                req.session.regenerate((err) => {
-                    if (err) {
-                        return next(err);
-                    }
-                    return res.status(200).json({ message: "Login successful", user: user });
-                });
+                return res.status(200).json({ message: "Login successful", user: user });
             });
         })(req, res, next);
     }
