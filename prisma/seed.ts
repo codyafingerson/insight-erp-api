@@ -151,9 +151,9 @@ async function seedDevelopmentEnvironment() {
         where: { email: 'developer@example.com' },
         update: {},
         create: {
-            name: 'Developer',
-            username: 'developer',
-            email: 'developer@example.com',
+            name: 'Root User',
+            username: 'root',
+            email: 'null',
             password: hashedPassword,
             role: {
                 connect: { id: superAdminRole.id },
