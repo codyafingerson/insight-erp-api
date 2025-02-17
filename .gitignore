@@ -132,3 +132,5 @@ dist
 # prisma
 prisma/.prisma/client
 prisma/migrations
+
+.DS_Store
