@@ -46,6 +46,21 @@ export default class AuthController {
     }
 
     /**
+     * Handles user registration.
+     * @param {Request} req - The Express request object.
+     * @param {Response} res - The Express response object.
+     * @param {NextFunction} next - The Express next function.
+     * @returns {Promise<void>}
+     */
+    async me(req: Request, res: Response, next: NextFunction): Promise<void> {
+        if (!req.isAuthenticated()) {
+            return next(new ApiError(401, "Not authenticated"));
+        }
+        delete (req.user as any).password;
+        res.status(200).json({ user: req.user });
+    }
+
+    /**
      * Handles user logout.
      * @param {Request} req - The Express request object.
      * @param {Response} res - The Express response object.
