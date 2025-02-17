@@ -134,21 +134,24 @@ async function seedPermissionsAndRoles() {
 }
 
 /**
- * Seeding logic for Development environment
+ * The main entry point.
  */
-async function seedDevelopmentEnvironment() {
-    // 1. Seed Permissions and Roles
+async function main() {
+    const {
+        values: { environment },
+    } = parseArgs({ options })
+
     const { seededRoles } = await seedPermissionsAndRoles()
 
-    // 2. Optionally, seed a development user assigned to the SuperAdmin role
     const superAdminRole = seededRoles.find((role) => role.name === 'SuperAdmin')
     if (!superAdminRole) {
         throw new Error('SuperAdmin role was not found; cannot seed dev user.')
     }
 
+    // Seed the root user from .env
     const hashedPassword = await bcrypt.hash('password123', 10)
     const developerUser = await prisma.user.upsert({
-        where: { email: 'developer@example.com' },
+        where: { email: 'null' },
         update: {},
         create: {
             name: 'Root User',
@@ -161,43 +164,8 @@ async function seedDevelopmentEnvironment() {
         },
     })
 
-    console.log('Seeded Roles (development):', seededRoles)
+    console.log('Seeded Roles:', seededRoles)
     console.log('Seeded Developer user:', developerUser)
-}
-
-/**
- * Seeding logic for Production environment
- */
-async function seedProductionEnvironment() {
-    // 1. Seed Permissions and Roles
-    const { seededRoles } = await seedPermissionsAndRoles()
-
-    console.log('Seeded Roles (production):', seededRoles)
-}
-
-/**
- * The main entry point.
- */
-async function main() {
-    const {
-        values: { environment },
-    } = parseArgs({ options })
-
-    switch (environment) {
-        case 'development':
-            console.log('Seeding data for development environment...')
-            await seedDevelopmentEnvironment()
-            break
-
-        case 'production':
-            console.log('Seeding data for production environment...')
-            await seedProductionEnvironment()
-            break
-
-        default:
-            console.log('No matching environment. Skipping seeding...')
-            break
-    }
 }
 
 main()
