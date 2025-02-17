@@ -1,6 +1,9 @@
 import { PrismaClient, Permission } from '@prisma/client'
 import bcrypt from 'bcrypt'
+import dotenv from 'dotenv'
 import { parseArgs } from 'node:util'
+
+dotenv.config();
 
 const prisma = new PrismaClient()
 
@@ -149,22 +152,30 @@ async function main() {
     }
 
     // Seed the root user from .env
-    const hashedPassword = await bcrypt.hash('password123', 10)
+    const hashedPassword = await bcrypt.hash(process.env.ROOT_PASSWORD as string, 10)
     const developerUser = await prisma.user.upsert({
-        where: { email: 'null' },
+        where: { 
+            email: !process.env.ROOT_EMAIL ? 'null' : process.env.ROOT_EMAIL 
+        },
         update: {},
         create: {
-            name: 'Root User',
-            username: 'root',
-            email: 'null',
+            name: process.env.ROOT_NAME as string,
+            username: process.env.ROOT_USERNAME as string,
+            email: process.env.ROOT_EMAIL as string,
             password: hashedPassword,
             role: {
-                connect: { id: superAdminRole.id },
+                connect: { 
+                    id: superAdminRole.id 
+                },
             },
         },
     })
 
     console.log('Seeded Roles:', seededRoles)
+
+    // Remove the password hash from the log
+    developerUser.password = '<REDACTED>'
+
     console.log('Seeded Developer user:', developerUser)
 }
 
