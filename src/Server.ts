@@ -63,6 +63,7 @@ class Server {
 
         if (process.env.NODE_ENV === 'production') {
             this.app.use(morgan('combined'));
+            this.app.set('trust proxy', 1);
         } else {
             // Development environment with more verbose logs
             this.app.use(morgan('dev'));
