@@ -27,19 +27,3 @@ export const authorize = (permission?: string) => {
         next();
     };
 };
-
-export const userIsSelf = async (req: Request, res: Response, next: NextFunction) => {
-    // Ensure the user is authenticated.
-    if (!req.user || !req.isAuthenticated()) {
-        return next(new ApiError(401, "Unauthorized"));
-    }
-
-    const user = req.user as AuthenticatedUserDto;
-
-    // Check if the user is the same as the requested user.
-    if (user.id !== req.params.userId) {
-        return next(new ApiError(403, "Forbidden"));
-    }
-
-    next();
-};
