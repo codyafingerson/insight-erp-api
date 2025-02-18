@@ -53,7 +53,6 @@ class Server {
         dotenv.config();
 
         this.app.set('port', process.env.PORT || 3000);
-        this.app.disable('x-powered-by');
 
         // Middleware
         this.app.use(helmet());
@@ -92,7 +91,7 @@ class Server {
                 cookie: {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
-                    sameSite: 'strict',
+                    sameSite: 'none',
                     maxAge: 1000 * 60 * 60, // 1 hour
                 },
             })
