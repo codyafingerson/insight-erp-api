@@ -74,7 +74,15 @@ export default class AuthController {
             if (err) {
                 return next(new ApiError(500, "Logout failed"));
             }
-            return res.status(200).json({ success: true });
+
+            req.session.destroy((err: any) => {
+                if (err) {
+                    return next(new ApiError(500, "Session destroy failed"));
+                }
+
+                res.clearCookie("insight-erp");
+                return res.status(200).json({ success: true });
+            });
         });
     }
 }
