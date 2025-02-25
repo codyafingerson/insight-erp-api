@@ -1,7 +1,6 @@
 import { PrismaClient, Permission } from '@prisma/client'
 import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
-import { parseArgs } from 'node:util'
 
 dotenv.config();
 
