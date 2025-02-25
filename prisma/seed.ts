@@ -7,10 +7,6 @@ dotenv.config();
 
 const prisma = new PrismaClient()
 
-const options = {
-    environment: { type: 'string' as const },
-}
-
 /**
  * Define the names and descriptions of each permission.
  * These will be used to seed the database with initial permissions.
@@ -41,7 +37,6 @@ const permissionsData = Object.values(PermissionName).map(name => ({
     name,
     description: `Permission to ${name.replace(/([A-Z])/g, ' $1').toLowerCase()}`
 }));
-
 
 // Define each role’s name, description, and the permission names that belong to it.
 const rolesData = [
@@ -140,10 +135,6 @@ async function seedPermissionsAndRoles() {
  * The main entry point.
  */
 async function main() {
-    const {
-        values: { environment },
-    } = parseArgs({ options })
-
     const { seededRoles } = await seedPermissionsAndRoles()
 
     const superAdminRole = seededRoles.find((role) => role.name === 'SuperAdmin')
@@ -153,7 +144,7 @@ async function main() {
 
     // Seed the root user from .env
     const hashedPassword = await bcrypt.hash(process.env.ROOT_PASSWORD as string, 10)
-    const rootUser = await prisma.user.upsert({
+    await prisma.user.upsert({
         where: { 
             email: !process.env.ROOT_EMAIL ? 'null' : process.env.ROOT_EMAIL 
         },
@@ -171,12 +162,8 @@ async function main() {
         },
     })
 
-    console.log('Seeded Roles:', seededRoles)
-
-    // Remove the password hash from the log
-    rootUser.password = '<REDACTED>'
-
-    console.log('Seeded Developer user:', rootUser)
+    console.log('Seeded roles and permissions')
+    console.log('Seeded root user')
 }
 
 main()
