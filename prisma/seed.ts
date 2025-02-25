@@ -148,12 +148,12 @@ async function main() {
 
     const superAdminRole = seededRoles.find((role) => role.name === 'SuperAdmin')
     if (!superAdminRole) {
-        throw new Error('SuperAdmin role was not found; cannot seed dev user.')
+        throw new Error('SuperAdmin role was not found; cannot seed root user.')
     }
 
     // Seed the root user from .env
     const hashedPassword = await bcrypt.hash(process.env.ROOT_PASSWORD as string, 10)
-    const developerUser = await prisma.user.upsert({
+    const rootUser = await prisma.user.upsert({
         where: { 
             email: !process.env.ROOT_EMAIL ? 'null' : process.env.ROOT_EMAIL 
         },
@@ -174,9 +174,9 @@ async function main() {
     console.log('Seeded Roles:', seededRoles)
 
     // Remove the password hash from the log
-    developerUser.password = '<REDACTED>'
+    rootUser.password = '<REDACTED>'
 
-    console.log('Seeded Developer user:', developerUser)
+    console.log('Seeded Developer user:', rootUser)
 }
 
 main()
