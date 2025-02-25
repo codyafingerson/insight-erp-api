@@ -1,66 +1,55 @@
 # Insight ERP - Backend Service
 
-## About The Project
+## About
 
-This is the backend service for the Insight ERP (Enterprise Resource Planning) application, which powers the frontend interface. The goal of this project is to streamline essential business operations, including HR, inventory management, customer management, and user management. Future enhancements will include an integrated email-style communication feature for engaging with customers and prospects, ordering, and more!
+This backend service powers the Insight ERP (Enterprise Resource Planning) application, supporting the frontend interface. It aims to streamline core business operations for small to medium-sized businesses, including HR, inventory management, customer management, and user management, offering a scalable and efficient management solution. Future enhancements include integrated email-style communication for engaging with customers and prospects, ordering capabilities, and more.
 
-This solution is primarily designed for small to medium-sized businesses, providing a scalable and efficient way to manage core business functions.
-
-## Built With
+## Tech Stack
 
 - ![Node][Nodejs.com]
 - ![TypeScript][TypeScript.com]
 - ![Express.js][Expressjs.com]
 - ![Prisma][Prisma.io]
 
-## Prerequisites
+## Setup
+
+### Prerequisites
+
 - Node.js/npm
-- MySQL
+- Postgres
+- Bash/zsh
 
-## Getting Started
-1. Clone the repository
-```sh
-git clone git@github.com:codyafingerson/insight-erp-api.git
-```
+### Installation
 
-2. Install dependencies
-```sh
-npm install
-```
+1.  Clone the repository:
 
-3. Create a `.env` file in the root directory and add the following environment variables:
-```sh
-NODE_ENV=development
-PORT=8000
-SESSION_SECRET=secret
-DATABASE_URL=mysql://<YOUR_USERNAME>:<YOUR_PASSWORD>@localhost:3306/insight_erp_api
-```
-> To create the database, run the command: `CREATE DATABASE IF NOT EXIST insight_erp_api;`
+    ```sh
+    git clone git@github.com:codyafingerson/insight-erp-api.git
+    ```
 
-4. Run the application to verify that it is working correctly
-```sh
-npm run dev
-```
-> The application should now be running on `http://localhost:8000`
+2.  Install dependencies:
 
-5. Run the Prisma migration to create the database schema
-```sh
-npx run migrate
-```
+    ```bash
+    npm install
+    ```
 
-6. Seed the database with initial data
-```sh
-npm run seed
-```
+3.  Run [setup.sh](./setup.sh) for easy environment configuration:
 
-> Note: This will create a user with the following credentials:
-> - username: `developer`
-> - password: `password123`
+    ```bash
+    chmod +x ./setup.sh
+    ./setup.sh
+    ```
 
-## Routes
-See the Postman collection for more details on the available routes.
-> Note: The collection is a work in progress and will be updated as new features are added.
-> If you do not have access to the collection, please reach out to the project owner!
+    > Note: This script creates a default user with the following credentials:
+    >
+    > - username: `root`
+    > - password: `root`
+
+## API Routes
+
+Refer to the Postman collection for details on available routes.
+
+> Note: The Postman collection is actively being updated with new features. Contact the project owner for access.
 
 [Nodejs.com]: https://shields.io/badge/Node.js-339933?logo=Node.js&logoColor=FFF&style=flat-square
 [TypeScript.com]: https://shields.io/badge/TypeScript-3178C6?logo=TypeScript&logoColor=FFF&style=flat-square
