@@ -15,7 +15,7 @@ prompt() {
 
 prompt NODE_ENV "Enter the environment (development, production, etc.) [default: development]: " "development"
 prompt PORT "Enter the port number [default: 8000]: " "8000"
-prompt DATABASE_URL "Enter your DATABASE_URL [default: mysql://root:root@localhost:3306/insight_erp_dev]: " "mysql://root:root@localhost:3306/insight_erp_dev"
+prompt DATABASE_URL "Enter your DATABASE_URL [default: postgres://insight_erp_user:P@assword1@localhost:5432/insight_erp]: " "postgres://insight_erp_user:P@assword1@localhost:5432/insight_erp"
 prompt REDIS_HOST "Enter REDIS_HOST [default: localhost]: " "localhost"
 prompt REDIS_PORT "Enter REDIS_PORT [default: 6379]: " "6379"
 prompt REDIS_PASSWORD "Enter REDIS_PASSWORD [default: empty]: " ""
@@ -48,7 +48,8 @@ read -p "Do you want to migrate and seed the database? (y/n) " migrate_db
 if [[ "$migrate_db" == "y" ]]; then
   npx prisma generate
   if [[ "$NODE_ENV" == "development" ]]; then
-    npx prisma migrate dev --name init
+    npm run migrate
+    npm run seed
   else
     npx prisma migrate deploy
   fi
