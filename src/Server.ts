@@ -28,7 +28,7 @@ class Server {
 
     public async start() {
         this.app.use(errorHandler);
-        const server = this.app.listen(this.app.get('port'), () => {
+        const server = this.app.listen(this.app.get('port'), '0.0.0.0', () => {
             console.log(`Server running on port ${this.app.get('port')}`);
         });
 
