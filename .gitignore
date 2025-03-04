@@ -129,8 +129,4 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-# prisma
-prisma/.prisma/client
-prisma/migrations
-
 .DS_Store
