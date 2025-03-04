@@ -1,9 +1,20 @@
+import { logger } from "../config/logger";
+
 export default class ApiError extends Error {
     status: number;
-    constructor(status: number, message: string) {
+
+    constructor(status: number, message: string) { // Add req parameter
         super(message);
         this.status = status;
-        this.name = this.constructor.name; 
+        
+        let logMessage = `${this.status} ${this.message}`;
+
+        logger.error(logMessage);
+
+        if(process.env.NODE_ENV === 'development') {
+            logger.info(`${this.stack}`);
+        }
+
         Error.captureStackTrace(this, this.constructor);
     }
 }
