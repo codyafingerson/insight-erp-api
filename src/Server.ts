@@ -15,6 +15,7 @@ import UsersRoutes from './api/users/UsersRoutes';
 import AuthRoutes from './api/auth/AuthRoutes';
 import DepartmentsRoutes from './api/departments/DepartmentsRoutes';
 import EmployeesRoutes from './api/employees/EmployeesRoutes';
+import { morganStream } from './config/logger';
 
 class Server {
     private app: Application;
@@ -60,13 +61,11 @@ class Server {
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: false }));
 
-        if (process.env.NODE_ENV === 'production') {
-            this.app.use(morgan('combined'));
-            this.app.set('trust proxy', 1);
-        } else {
-            // Development environment with more verbose logs
-            this.app.use(morgan('dev'));
-        }
+        this.app.use(
+            morgan(":method :url :status :res[content-length] - :response-time ms", {
+                stream: morganStream,
+            })
+        )
 
         // Initialize Redis store using the ioredis client
         const redisStore = new RedisStore({
