@@ -7,33 +7,45 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        NODE_ENV: development # Build argument to install dev dependencies
+        NODE_ENV: development
     volumes:
-      - ./src:/app/src # Mount source code for live reload in development
+      - ./src:/app/src
     env_file:
-      - .env.development # Load environment variables from a .env file (development)
-    command: sh -c "npx prisma migrate dev && npm run seed &&npm run dev"
-    # ^ On startup, apply Prisma migrations (development mode) then start Nodemon dev server
+      - .env.development
+    command: >
+      sh -c "
+        npx prisma migrate dev &&
+        npm run seed &&
+        npm run dev
+      "
     depends_on:
-      - postgres_dev
-      - redis_dev
+      postgres_dev:
+        condition: service_healthy  # <-- Wait until Postgres is healthy!!
+      redis_dev:
+        condition: service_started
     networks:
       - insight_erp_dev_network
     ports:
-      - "3000:3000" # (Optional) expose app port for local access
+      - "3000:3000"
 
   postgres_dev:
     profiles: [ "dev" ]
     container_name: postgres_dev
     image: postgres:13-alpine
     env_file:
-      - .env.development # Use .env for POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB in dev
+      - .env.development
     volumes:
-      - postgres_dev_data:/var/lib/postgresql/data # Persist database data (development)
+      - postgres_dev_data:/var/lib/postgresql/data
     networks:
       - insight_erp_dev_network
     ports:
-      - "5432:5432" # (Optional) expose PostgreSQL port for local dev access
+      - "5432:5432"
+    # Ensure Postgres is truly ready
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   redis_dev:
     profiles: [ "dev" ]
@@ -42,7 +54,7 @@ services:
     networks:
       - insight_erp_dev_network
     ports:
-      - "6379:6379" # (Optional) expose Redis port for local dev debugging
+      - "6379:6379"
 
   # Production environment services
   app_prod:
@@ -52,30 +64,24 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        NODE_ENV: production # Build argument to install only prod dependencies and compile TS
-    # In production, sensitive values are provided via Docker secrets (see the secrets section below)
+        NODE_ENV: production
     environment:
-      # Non-sensitive env vars (examples):
       NODE_ENV: production
       DB_HOST: postgres_prod
       DB_PORT: 5432
       DB_USER: myapp_user
       DB_NAME: myapp_db
-      # Use Docker secret for the database password
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres_prod_password
-      # (The app can construct or use this for the DB connection string)
-      # e.g., Prisma can use DATABASE_URL that includes the password from secret
     secrets:
-      - postgres_prod_password # Docker Swarm secret for the DB password
+      - postgres_prod_password
     command: sh -c "npx prisma migrate deploy && npm run start"
-    # ^ On startup, run Prisma migrations (production mode) then start the Node app
     depends_on:
       - postgres_prod
       - redis_prod
     networks:
       - insight_erp_prod_network
     ports:
-      - "3000:3000" # (Optional) expose app port (e.g., behind a reverse proxy in prod)
+      - "3000:3000"
 
   postgres_prod:
     profiles: [ "prod" ]
@@ -84,14 +90,13 @@ services:
     environment:
       POSTGRES_USER: myapp_user
       POSTGRES_DB: myapp_db
-      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_prod_password # Use Docker secret for password
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_prod_password
     secrets:
       - postgres_prod_password
     volumes:
-      - postgres_prod_data:/var/lib/postgresql/data # Persist database data (production)
+      - postgres_prod_data:/var/lib/postgresql/data
     networks:
       - insight_erp_prod_network
-    # (Ports not exposed publicly in production for security, accessible only within network)
 
   redis_prod:
     profiles: [ "prod" ]
@@ -99,21 +104,17 @@ services:
     image: redis:6-alpine
     networks:
       - insight_erp_prod_network
-    # (No ports exposed; used only by app within the Docker network)
 
-    # Define separate Docker networks for isolation of dev and prod environments
 networks:
   insight_erp_dev_network:
     name: insight_erp_dev_network
   insight_erp_prod_network:
     name: insight_erp_prod_network
 
-# Define volumes for persistent storage of PostgreSQL data
 volumes:
   postgres_dev_data:
   postgres_prod_data:
 
-    # Define Docker secrets for sensitive data (used in production services)
 secrets:
   postgres_prod_password:
-    file: ./secrets/postgres_prod_password.txt # This file should contain the DB password for production
+    file: ./secrets/postgres_prod_password.txt
