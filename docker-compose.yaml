@@ -12,7 +12,7 @@ services:
       - ./src:/app/src # Mount source code for live reload in development
     env_file:
       - .env.development # Load environment variables from a .env file (development)
-    command: sh -c "npx prisma migrate dev && npm run dev"
+    command: sh -c "npx prisma migrate dev && npm run seed &&npm run dev"
     # ^ On startup, apply Prisma migrations (development mode) then start Nodemon dev server
     depends_on:
       - postgres_dev
