@@ -2,6 +2,7 @@ import prisma from "../../config/prisma";
 import { hashPassword } from "../../utils/bcrypt";
 import { CreateUserDto, UpdateUserDto, UserResponseDto } from "./UsersDto";
 import ApiError from "../../utils/ApiError";
+import { sendMailWithTemplate } from "../../utils/mailer";
 
 /**
  * UserService class handles user-related operations.
@@ -66,6 +67,24 @@ export default class UserService {
                 },
             });
 
+            // Send the welcome email
+            // sendMailWithTemplate(
+            //     to: string,
+            //     subject: string,
+            //     templateName: string,
+            //     context: any
+            // )
+
+            await sendMailWithTemplate(
+                createdUser.email,
+                'Welcome to Insight ERP!',
+                'welcome',
+                {
+                    name: createdUser.name,
+                    username: createdUser.username,
+                }
+            );
+            
             return createdUser as UserResponseDto;
         } catch (error: any) {
             if (error instanceof ApiError) {
@@ -186,11 +205,11 @@ export default class UserService {
         }
     }
 
-        /**
-     * Deletes a user.
-     * @param {string} id - The user ID.
-     * @returns {Promise<UserResponseDto>} - The deleted user.
-     */
+    /**
+ * Deletes a user.
+ * @param {string} id - The user ID.
+ * @returns {Promise<UserResponseDto>} - The deleted user.
+ */
     async deleteUser(id: string): Promise<UserResponseDto> {
         try {
             const deletedUser = await this.prisma.user.delete({
