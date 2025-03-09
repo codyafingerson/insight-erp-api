@@ -15,7 +15,7 @@ import UsersRoutes from './api/users/UsersRoutes';
 import AuthRoutes from './api/auth/AuthRoutes';
 import DepartmentsRoutes from './api/departments/DepartmentsRoutes';
 import EmployeesRoutes from './api/employees/EmployeesRoutes';
-import { morganStream } from './config/logger';
+import { morganStream } from './utils/logger';
 
 class Server {
     private app: Application;

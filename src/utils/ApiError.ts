@@ -1,4 +1,4 @@
-import { logger } from "../config/logger";
+import { logger } from "./logger";
 
 export default class ApiError extends Error {
     status: number;

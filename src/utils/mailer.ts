@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import * as expressHandlebars from 'express-handlebars';
 import path from 'path';
-import { logger } from '../config/logger';
+import { logger } from './logger';
 
 // Create the transporter
 const transporter = nodemailer.createTransport({
