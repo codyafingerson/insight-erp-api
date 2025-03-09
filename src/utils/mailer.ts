@@ -1,17 +1,18 @@
 import nodemailer from 'nodemailer';
 import * as expressHandlebars from 'express-handlebars';
 import path from 'path';
-import { logger } from '../config/logger';
+import { logger } from './logger';
+import { environment } from '../config/environment';
 
 // Create the transporter
 const transporter = nodemailer.createTransport({
     service: 'Zoho',
-    host: process.env.MAIL_HOST as string,
-    port: parseInt(process.env.MAIL_PORT as string),
+    host: environment.mail.host,
+    port: environment.mail.port,
     secure: true,
     auth: {
-        user: process.env.MAIL_USER as string,
-        pass: process.env.MAIL_PASSWORD as string
+        user: environment.mail.user,
+        pass: environment.mail.password
     }
 });
 
@@ -50,7 +51,7 @@ export const sendMailWithTemplate = async (
     await initializeMailerTemplateEngine();
 
     const mailOptions = {
-        from: process.env.MAIL_USER as string,
+        from: environment.mail.user,
         to,
         subject,
         template: templateName, // name of the template file without extension

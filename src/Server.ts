@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+import { environment } from './config/environment';
 import express, { Application, Request, Response } from 'express';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
@@ -15,7 +15,7 @@ import UsersRoutes from './api/users/UsersRoutes';
 import AuthRoutes from './api/auth/AuthRoutes';
 import DepartmentsRoutes from './api/departments/DepartmentsRoutes';
 import EmployeesRoutes from './api/employees/EmployeesRoutes';
-import { morganStream } from './config/logger';
+import { morganStream } from './utils/logger';
 
 class Server {
     private app: Application;
@@ -51,9 +51,7 @@ class Server {
     }
 
     private async config() {
-        dotenv.config();
-
-        this.app.set('port', process.env.PORT || 3000);
+        this.app.set('port', 3000);
 
         // Middleware
         this.app.use(helmet());
@@ -74,7 +72,7 @@ class Server {
         });
 
         // Session configuration
-        const sessionSecret = process.env.SESSION_SECRET;
+        const sessionSecret = environment.sessionSecret;
         if (!sessionSecret) {
             console.error('SESSION_SECRET is not defined. Exiting.');
             process.exit(1);
@@ -89,7 +87,7 @@ class Server {
                 name: 'insight-erp',
                 cookie: {
                     httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
+                    secure: environment.nodeEnv === 'production',
                     sameSite: 'none',
                     maxAge: 1000 * 60 * 60, // 1 hour
                 },
