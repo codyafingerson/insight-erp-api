@@ -59,7 +59,6 @@ export const sendMailWithTemplate = async (
     };
 
     try {
-        console.log("Sending email...");
         await transporter.sendMail(mailOptions);
         logger.info(`Email sent to ${to} with subject ${subject}`);
     } catch (error) {
