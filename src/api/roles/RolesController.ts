@@ -2,129 +2,77 @@ import { Request, Response, NextFunction } from "express";
 import RolesService from "./RolesService";
 import { CreateRoleDto } from "./RolesDto";
 import ApiError from "../../utils/ApiError";
+import BaseController from "../BaseController";
 
-/**
- * RolesController class handles role-related requests.
- */
-export default class RolesController {
-    /**
-     * RolesController constructor.
-     * @param {RolesService} rolesService - The service layer for roles.
-     */
-    constructor(private readonly rolesService: RolesService) {
-        this.rolesService = rolesService;
-
-        this.createRole = this.createRole.bind(this);
-        this.getRoleById = this.getRoleById.bind(this);
-        this.getAllRoles = this.getAllRoles.bind(this);
-        this.updateRole = this.updateRole.bind(this);
-        this.deleteRole = this.deleteRole.bind(this);
+export default class RolesController extends BaseController<RolesService> {
+    constructor(service: RolesService) {
+        super(service);
+        this.create = this.create.bind(this);
+        this.getAll = this.getAll.bind(this);
+        this.getById = this.getById.bind(this);
+        this.update = this.update.bind(this);
+        this.delete = this.delete.bind(this);
         this.getAllPermissions = this.getAllPermissions.bind(this);
     }
 
-    /**
-    * Creates a new role.
-    * @param {Request} req - The Express request object.
-    * @param {Response} res - The Express response object.
-    * @param {NextFunction} next - The Express next function.
-    * @returns {Promise<void>}
-    */
-    async createRole(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async create(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const { name, description, permissions } = req.body;
+        if (!name) {
+            return next(new ApiError(400, "Role name is required."));
+        }
+        const data: CreateRoleDto = { name, description, permissions };
         try {
-            const { name, description, permissions } = req.body;
-            const data: CreateRoleDto = { name, description, permissions };
-
-            if (!name) {
-                return next(new ApiError(400, "Role name is required."));
-            }
-
-            const role = await this.rolesService.createRole(data);
-
+            const role = await this.service.createRole(data);
             res.status(201).json(role);
         } catch (error: any) {
             next(error);
         }
     }
 
-    /**
-     * Gets a role by ID.
-     * @param {Request} req - The Express request object.
-     * @param {Response} res - The Express response object.
-     * @param {NextFunction} next - The Express next function.
-     * @returns {Promise<void>}
-     */
-    async getRoleById(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const { id } = req.params;
-
-            if (!id) {
-                return next(new ApiError(400, "No ID provided."));
-            }
-
-            const role = await this.rolesService.getRoleById(id);
-            res.status(200).json(role);
-        } catch (error: any) {
-            next(error);
-        }
-    }
-
-    /**
-     * Gets all roles.
-     * @param {Request} req - The Express request object.
-     * @param {Response} res - The Express response object.
-     * @param {NextFunction} next - The Express next function.
-     * @returns {Promise<void>}
-     */
-    async getAllRoles(req: Request, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const roles = await this.rolesService.getAllRoles();
+            const roles = await this.service.getAllRoles();
             res.status(200).json(roles);
         } catch (error: any) {
             next(new ApiError(500, error.message));
         }
     }
 
-    /**
-    * Updates a role.
-    * @param {Request} req - The Express request object.
-    * @param {Response} res - The Express response object.
-    * @param {NextFunction} next - The Express next function.
-    * @returns {Promise<void>}
-    */
-    async updateRole(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async getById(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const { id } = req.params;
+        if (!id) {
+            return next(new ApiError(400, "No ID provided."));
+        }
         try {
-            const role = await this.rolesService.updateRole(req.params.id, req.body);
+            const role = await this.service.getRoleById(id);
+            res.status(200).json(role);
+        } catch (error: any) {
+            next(error);
+        }
+    }
+
+    async update(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const role = await this.service.updateRole(req.params.id, req.body);
             res.status(200).json(role);
         } catch (error: any) {
             next(new ApiError(404, error.message));
         }
     }
 
-    /**
-    * Deletes a role.
-    * @param {Request} req - The Express request object.
-    * @param {Response} res - The Express response object.
-    * @param {NextFunction} next - The Express next function.
-    * @returns {Promise<void>}
-    */
-    async deleteRole(req: Request, res: Response, next: NextFunction) {
+    async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            await this.rolesService.deleteRole(req.params.id);
+            await this.service.deleteRole(req.params.id);
             res.status(204).send();
         } catch (error: any) {
             next(new ApiError(404, error.message));
         }
     }
 
-    /**
-     * Retrieves all permissions.
-     * @param {Request} req - The Express request object.
-     * @param {Response} res - The Express response object.
-     * @param {NextFunction} next - The Express next function.
-     */
-    async getAllPermissions(req: Request, res: Response, next: NextFunction) {
+    // Additional method not part of BaseController
+    async getAllPermissions(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const permissions = await this.rolesService.getAllPermissions();
+            const permissions = await this.service.getAllPermissions();
             res.status(200).json(permissions);
         } catch (error: any) {
             next(new ApiError(500, error.message));

@@ -15,17 +15,16 @@ import { authorize } from "../../middlewares/authorize";
  * @description Creates a new role.
  * @access Private
  */
-router.post("/", authorize("create_role"), rolesController.createRole);
+router.post("/", authorize("create_role"), rolesController.create);
 
 /**
  * @route GET /api/roles
  * @description Retrieves all roles.
  * @access Private
  */
-router.get("/", authorize("read_all_roles"), rolesController.getAllRoles);
+router.get("/", authorize("read_all_roles"), rolesController.getAll);
 
 /**
->>>>>>> bbca3aba4d87c15476eb25a50bb557585cfe7c7d
  * @route GET /api/roles/permissions
  * @description Retrieves all permissions.
  * @access Private
@@ -33,30 +32,24 @@ router.get("/", authorize("read_all_roles"), rolesController.getAllRoles);
 router.get("/permissions", authorize("read_all_roles"), rolesController.getAllPermissions);
 
 /**
->>>>>>> Stashed changes
-=======
-router.get("/permissions", rolesController.getAllPermissions);
-
-/**
->>>>>>> bbca3aba4d87c15476eb25a50bb557585cfe7c7d
  * @route GET /api/roles/:id
  * @description Retrieves a role by ID.
  * @access Private
  */
-router.get("/:id", authorize("read_all_roles"), rolesController.getRoleById);
+router.get("/:id", authorize("read_all_roles"), rolesController.getById);
 
 /**
  * @route PUT /api/roles/:id
  * @description Updates a role by ID.
  * @access Private
  */
-router.put("/:id", authorize("update_role"), rolesController.updateRole);
+router.put("/:id", authorize("update_role"), rolesController.update);
 
 /**
  * @route DELETE /api/roles/:id
  * @description Deletes a role by ID.
  * @access Private
  */
-router.delete("/:id", authorize("delete_role"), rolesController.deleteRole);
+router.delete("/:id", authorize("delete_role"), rolesController.delete);
 
 export default router;
