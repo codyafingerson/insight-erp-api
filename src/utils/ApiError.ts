@@ -1,3 +1,4 @@
+import { environment } from "../config/environment";
 import { logger } from "./logger";
 
 export default class ApiError extends Error {
@@ -11,7 +12,7 @@ export default class ApiError extends Error {
 
         logger.error(logMessage);
 
-        if(process.env.NODE_ENV === 'development') {
+        if(environment.nodeEnv === 'development') {
             logger.info(`${this.stack}`);
         }
 
