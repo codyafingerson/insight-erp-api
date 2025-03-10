@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/Server.js",
     "dev": "nodemon src/Server.ts",
-    "build": "tsc",
+    "build": "tsc && mkdir -p dist/emails && cp -r src/emails/*.hbs dist/emails/",
     "migrate": "npx prisma migrate dev",
     "seed": "npx prisma db seed"
   },
