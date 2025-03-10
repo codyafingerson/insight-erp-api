@@ -56,7 +56,7 @@ class Server {
 
         // Middleware
         this.app.use(cors({
-            origin: environment.corsOrigin,
+            origin: environment.cors.allowedOrigins,
             credentials: true, // Allow cookies to be sent
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
             allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],

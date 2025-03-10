@@ -15,7 +15,6 @@ const isProduction = process.env.NODE_ENV === "production";
 const environment = {
     nodeEnv: ensureEnvVar("NODE_ENV", "development"),
     sessionSecret: ensureEnvVar("SESSION_SECRET"),
-    corsOrigin: ensureEnvVar("CORS_ORIGIN"),
     port: parseInt(ensureEnvVar("PORT"), 10),
 
     database: {
@@ -47,6 +46,9 @@ const environment = {
         port: parseInt(ensureEnvVar("MAIL_PORT", "465"), 10),
         user: ensureEnvVar("MAIL_USER"),
         password: ensureEnvVar("MAIL_PASSWORD")
+    },
+    cors: {
+        allowedOrigins: ensureEnvVar("CORS_ALLOWED_ORIGINS") ? ensureEnvVar("CORS_ALLOWED_ORIGINS").split(",") : ["http://localhost:3000"],
     },
 };
 
