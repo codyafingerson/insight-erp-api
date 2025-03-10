@@ -52,7 +52,7 @@ class Server {
     }
 
     private async config() {
-        this.app.set('port', 3000);
+        this.app.set('port', environment.port || 3000);
 
         // Middleware
         this.app.use(cors({

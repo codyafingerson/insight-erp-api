@@ -16,6 +16,7 @@ const environment = {
     nodeEnv: ensureEnvVar("NODE_ENV", "development"),
     sessionSecret: ensureEnvVar("SESSION_SECRET"),
     corsOrigin: ensureEnvVar("CORS_ORIGIN"),
+    port: parseInt(ensureEnvVar("PORT"), 10),
 
     database: {
         url: ensureEnvVar("DATABASE_URL"),
