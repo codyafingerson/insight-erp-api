@@ -3,6 +3,7 @@ import { comparePasswords, hashPassword } from "../../utils/bcrypt";
 import { CreateUserDto, UpdateUserDto, UserResponseDto } from "./UsersDto";
 import ApiError from "../../utils/ApiError";
 import { sendMailWithTemplate } from "../../utils/mailer";
+import crypto from 'crypto';
 
 /**
  * UserService class handles user-related operations.
@@ -242,7 +243,7 @@ export default class UserService {
             throw new ApiError(404, 'User not found');
         }
 
-        const token = Math.random().toString(36);
+        const token = crypto.randomBytes(32).toString('hex');
 
         // Calculate expiration time (15 minutes from now)
         const expires = new Date(Date.now() + 15 * 60 * 1000);
