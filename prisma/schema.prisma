@@ -16,6 +16,8 @@ model User {
   username String  @unique
   email    String  @unique
   password String
+  resetToken String?
+  resetTokenExpires DateTime?
 }
 
 model Role {
