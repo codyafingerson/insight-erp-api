@@ -45,4 +45,25 @@ router.get("/:id", authorize('read_all_users'), userController.getById);
  */
 router.delete("/:id", authorize('delete_user'), userController.delete);
 
+/**
+ * @route POST /api/users/request-password-reset
+ * @description Initiates the password reset process for a user.
+ * @access Public
+ */
+router.post("/request-password-reset", userController.requestPasswordReset);
+
+/**
+ * @route POST /api/users/reset-password
+ * @description Resets the user's password.
+ * @access Public
+ */
+router.post("/reset-password", userController.resetPassword);
+
+/**
+ * @route POST /api/users/change-password
+ * @description Changes the user's password.
+ * @access Private
+ */
+router.post("/change-password", authorize('change_password'), userController.changePassword);
+
 export default router;

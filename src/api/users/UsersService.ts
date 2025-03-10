@@ -1,8 +1,9 @@
 import prisma from "../../config/prisma";
-import { hashPassword } from "../../utils/bcrypt";
+import { comparePasswords, hashPassword } from "../../utils/bcrypt";
 import { CreateUserDto, UpdateUserDto, UserResponseDto } from "./UsersDto";
 import ApiError from "../../utils/ApiError";
 import { sendMailWithTemplate } from "../../utils/mailer";
+import crypto from 'crypto';
 
 /**
  * UserService class handles user-related operations.
@@ -67,14 +68,6 @@ export default class UserService {
                 },
             });
 
-            // Send the welcome email
-            // sendMailWithTemplate(
-            //     to: string,
-            //     subject: string,
-            //     templateName: string,
-            //     context: any
-            // )
-
             await sendMailWithTemplate(
                 createdUser.email,
                 'Welcome to Insight ERP!',
@@ -84,7 +77,7 @@ export default class UserService {
                     username: createdUser.username,
                 }
             );
-            
+
             return createdUser as UserResponseDto;
         } catch (error: any) {
             if (error instanceof ApiError) {
@@ -240,5 +233,77 @@ export default class UserService {
             }
             throw new ApiError(500, error.message);
         }
+    }
+
+    async generateResetToken(email: string): Promise<string> {
+        // Find the user by email
+        const user = await prisma.user.findUnique({ where: { email } });
+        
+        if (!user) {
+            throw new ApiError(404, 'User not found');
+        }
+
+        const token = crypto.randomBytes(32).toString('hex');
+
+        // Calculate expiration time (15 minutes from now)
+        const expires = new Date(Date.now() + 15 * 60 * 1000);
+
+        // Save token and expiration to the user record
+        await prisma.user.update({
+            where: { id: user.id },
+            data: {
+                resetToken: token,
+                resetTokenExpires: expires
+            }
+        });
+
+        return token;
+    }
+
+
+    async resetPassword(token: string, newPassword: string): Promise<void> {
+        // Find user with this reset token, and ensure token is not expired
+        const user = await prisma.user.findFirst({
+            where: {
+                resetToken: token,
+                resetTokenExpires: { gt: new Date() }  // token is not expired
+            }
+        }) 
+        if (!user) {
+            throw new Error('Invalid or expired reset token');
+        }
+
+        // Hash the new password
+        const hashed = await hashPassword(newPassword);
+
+        // 3. Update the user with the new password and remove the reset token fields
+        await prisma.user.update({
+            where: { id: user.id },
+            data: {
+                password: hashed,
+                resetToken: null,
+                resetTokenExpires: null
+            }
+        });
+        // After this, the token is invalidated so it can't be used again!
+    }
+
+    async changePassword(userId: string, oldPassword: string, newPassword: string): Promise<void> {
+        // Find the user by ID
+        const user = await prisma.user.findUnique({ where: { id: userId } });
+        if (!user) throw new Error('User not found');
+
+        // Verify the old password matches the stored password
+        const passwordMatch = await comparePasswords(oldPassword, user.password);
+        if (!passwordMatch) {
+            throw new Error('Old password is incorrect');
+        }
+
+        // Hash the new password and save it
+        const hashed = await hashPassword(newPassword);
+        await prisma.user.update({
+            where: { id: userId },
+            data: { password: hashed }
+        });
     }
 }
