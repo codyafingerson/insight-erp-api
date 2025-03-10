@@ -3,6 +3,7 @@ import express, { Application, Request, Response } from 'express';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
+import cors from 'cors';
 import session from 'express-session';
 import passport from './config/passport';
 import errorHandler from './middlewares/errorMiddleware';
@@ -54,6 +55,12 @@ class Server {
         this.app.set('port', 3000);
 
         // Middleware
+        this.app.use(cors({
+            origin: 'http://localhost:5173',
+            credentials: true, // Allow cookies to be sent
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+            allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+        }));
         this.app.use(helmet());
         this.app.use(cookieParser());
         this.app.use(express.json());
