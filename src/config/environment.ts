@@ -15,6 +15,7 @@ const isProduction = process.env.NODE_ENV === "production";
 const environment = {
     nodeEnv: ensureEnvVar("NODE_ENV", "development"),
     sessionSecret: ensureEnvVar("SESSION_SECRET"),
+    corsOrigin: ensureEnvVar("CORS_ORIGIN"),
 
     database: {
         url: ensureEnvVar("DATABASE_URL"),
