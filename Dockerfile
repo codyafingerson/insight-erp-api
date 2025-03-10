@@ -6,6 +6,9 @@ WORKDIR /app
 ARG NODE_ENV=production 
 ENV NODE_ENV=${NODE_ENV}
 
+# Copy prisma schema first to invalidate cache on schema changes
+COPY prisma/schema.prisma ./prisma/
+
 # Install dependencies 
 # - If production, install only production dependencies 
 # - If development, install all dependencies (including devDependencies for tools like nodemon)
