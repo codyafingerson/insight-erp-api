@@ -100,7 +100,6 @@ class UserController extends BaseController<UserService> {
 
     async changePassword(req: Request, res: Response, next: NextFunction): Promise<void> {
         const userId = (req.user as any).id;
-        console.log(userId);
         const { oldPassword, newPassword } = req.body;
 
         if (!userId) {
