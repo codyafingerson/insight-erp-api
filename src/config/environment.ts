@@ -13,7 +13,7 @@ function ensureEnvVar(variable: string, defaultValue?: string): string {
 const isProduction = process.env.NODE_ENV === "production";
 
 const environment = {
-    nodeEnv: ensureEnvVar("NODE_ENV", "development"),
+    nodeEnv: ensureEnvVar("NODE_ENV"),
     sessionSecret: ensureEnvVar("SESSION_SECRET"),
     port: parseInt(ensureEnvVar("PORT"), 10),
 
