@@ -1,35 +1,37 @@
-# Use an official Node.js runtime as a base
-FROM node:20-alpine AS base
+# --- Builder Stage ---
+FROM oven/bun:1 AS builder
 WORKDIR /app
 
-# Default to production build; can be overridden at build time
-ARG NODE_ENV=production 
-ENV NODE_ENV=${NODE_ENV}
-
-# Copy prisma schema first to invalidate cache on schema changes
+# Copy package.json and package-lock.json first for caching
+COPY package*.json ./
 COPY prisma/schema.prisma ./prisma/
 
-# Install dependencies 
-# - If production, install only production dependencies 
-# - If development, install all dependencies (including devDependencies for tools like nodemon)
-COPY package*.json ./ 
-RUN if [ "$NODE_ENV" = "production" ]; then \
-      npm ci --only=production; \
-    else \
-      npm install; \
-    fi
+# Install ALL dependencies (including devDependencies)
+RUN bun install
 
-# Copy application source code
-COPY . . 
+# Copy the rest of the application code
+COPY . .
 
-# Build the app for production (compile TypeScript to JavaScript)
-# Skip this step in development builds (nodemon will handle transpilation at runtime)
-RUN if [ "$NODE_ENV" = "production" ]; then npm run build; fi
+# Build the application (transpile TypeScript, etc.)
+RUN bun run build
 
-RUN chown -R node:node /app
+# --- Production Stage ---
+FROM oven/bun:1 AS production
+WORKDIR /app
 
-# Use a non-root user for security in the final image
-USER node
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
 
-# Default command (production start). This will be overridden in docker-compose for dev.
-CMD ["npm", "run", "start"]
+# Copy only the necessary files from the builder stage
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/prisma ./prisma
+
+# Ensure /app is writable by the bun user (including the logs folder that will be created)
+RUN mkdir -p logs && chown -R bun:bun /app
+
+# Set user to bun
+USER bun
+
+CMD ["bun", "run", "start"]

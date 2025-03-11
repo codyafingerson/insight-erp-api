@@ -11,30 +11,30 @@ services:
     volumes:
       - ./src:/app/src
     env_file:
-      - .env.development
+      - .env
     command: >
       sh -c "
-        npx prisma migrate dev &&
-        npx prisma generate &&
-        npm run seed &&
-        npm run dev
+        bunx prisma migrate dev &&
+        bunx prisma generate &&
+        bun run seed &&
+        bun run dev
       "
     depends_on:
       postgres_dev:
-        condition: service_healthy  # <-- Wait until Postgres is healthy!!
+        condition: service_healthy # <-- Wait until Postgres is healthy!!
       redis_dev:
         condition: service_started
     networks:
       - insight_erp_dev_network
     ports:
-      - "3000:3000"
+      - "${PORT}:${PORT}"
 
   postgres_dev:
     profiles: [ "dev" ]
     container_name: postgres_dev
     image: postgres:13-alpine
     env_file:
-      - .env.development
+      - .env
     volumes:
       - postgres_dev_data:/var/lib/postgresql/data
     networks:
@@ -43,7 +43,7 @@ services:
       - "5432:5432"
     # Ensure Postgres is truly ready
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -75,7 +75,7 @@ services:
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres_prod_password
     secrets:
       - postgres_prod_password
-    command: sh -c "npx prisma migrate deploy && npm run start"
+    command: sh -c "bunx prisma migrate deploy && bun run start"
     depends_on:
       - postgres_prod
       - redis_prod
@@ -115,6 +115,7 @@ networks:
 volumes:
   postgres_dev_data:
   postgres_prod_data:
+
 
 secrets:
   postgres_prod_password:
