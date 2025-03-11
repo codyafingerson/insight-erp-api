@@ -1,7 +1,7 @@
 import prisma from "../../config/prisma";
 import ApiError from "../../utils/ApiError";
 import { comparePasswords } from "../../utils/bcrypt";
-import { CredentialsDto } from "./AuthDto";
+import type { CredentialsDto } from "./AuthDto";
 
 /**
  * AuthService class handles user authentication logic.

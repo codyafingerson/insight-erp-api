@@ -1,7 +1,5 @@
-import { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
 import EmployeesService from "./EmployeesService";
-import { CreateEmployeeDto, EmployeeResponseDto } from "./EmployeesDto";
-import ApiError from "../../utils/ApiError";
 import BaseController from "../BaseController";
 
 class EmployeesController extends BaseController<EmployeesService> {
@@ -27,8 +25,7 @@ class EmployeesController extends BaseController<EmployeesService> {
     }
 
     async delete(req: Request, res: Response, next: NextFunction) {
-        await this.service.deleteEmployee(req.params.id);
-        res.status(204).end();
+        this.handleRequest(() => this.service.deleteEmployee(req.params.id), res, next, 204);
     }
 }
 

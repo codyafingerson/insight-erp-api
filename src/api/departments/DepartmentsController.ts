@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
 import DepartmentsService from "./DepartmentsService";
-import { CreateDepartmentDto } from "./DepartmentsDto";
+import type { CreateDepartmentDto } from "./DepartmentsDto";
 import ApiError from "../../utils/ApiError";
 import BaseController from "../BaseController";
 
@@ -8,7 +8,6 @@ import BaseController from "../BaseController";
  * DepartmentsController class handles department-related requests by extending BaseController.
  */
 export default class DepartmentsController extends BaseController<DepartmentsService> {
-
     constructor(departmentsService: DepartmentsService) {
         super(departmentsService);
     }
@@ -21,19 +20,12 @@ export default class DepartmentsController extends BaseController<DepartmentsSer
     * @returns {Promise<void>}
     */
     async create(req: Request, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const { name, description } = req.body;
-            const data: CreateDepartmentDto = { name, description };
-
-            if (!name) {
-                return next(new ApiError(400, "Department name is required."));
-            }
-
-            const department = await this.service.createDepartment(data);
-            res.status(201).json(department);
-        } catch (error: any) {
-            next(error);
+        const { name, description } = req.body;
+        if (!name) {
+            return next(new ApiError(400, "Department name is required."));
         }
+        const data: CreateDepartmentDto = { name, description };
+        await this.handleRequest(() => this.service.createDepartment(data), res, next, 201);
     }
 
     /**
@@ -44,12 +36,7 @@ export default class DepartmentsController extends BaseController<DepartmentsSer
      * @returns {Promise<void>}
      */
     async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const departments = await this.service.getAllDepartments();
-            res.status(200).json(departments);
-        } catch (error: any) {
-            next(new ApiError(500, error.message));
-        }
+        await this.handleRequest(() => this.service.getAllDepartments(), res, next, 200);
     }
 
     /**
@@ -60,18 +47,11 @@ export default class DepartmentsController extends BaseController<DepartmentsSer
      * @returns {Promise<void>}
      */
     async getById(req: Request, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const { id } = req.params;
-
-            if (!id) {
-                return next(new ApiError(400, "No ID provided."));
-            }
-
-            const department = await this.service.getDepartmentById(id);
-            res.status(200).json(department);
-        } catch (error: any) {
-            next(error);
+        const { id } = req.params;
+        if (!id) {
+            return next(new ApiError(400, "No ID provided."));
         }
+        await this.handleRequest(() => this.service.getDepartmentById(id), res, next, 200);
     }
 
     /**
@@ -82,12 +62,7 @@ export default class DepartmentsController extends BaseController<DepartmentsSer
     * @returns {Promise<void>}
     */
     async update(req: Request, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const department = await this.service.updateDepartment(req.params.id, req.body);
-            res.status(200).json(department);
-        } catch (error: any) {
-            next(new ApiError(404, error.message));
-        }
+        await this.handleRequest(() => this.service.updateDepartment(req.params.id, req.body), res, next, 200);
     }
 
     /**
@@ -98,11 +73,9 @@ export default class DepartmentsController extends BaseController<DepartmentsSer
     * @returns {Promise<void>}
     */
     async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
-        try {
+        await this.handleRequest(async () => {
             await this.service.deleteDepartment(req.params.id);
-            res.status(204).send();
-        } catch (error: any) {
-            next(new ApiError(404, error.message));
-        }
+            return null;
+        }, res, next, 204);
     }
 }

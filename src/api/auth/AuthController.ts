@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from "express";
-import AuthService from "./AuthService";
+import type { Request, Response, NextFunction } from "express";
 import passport from "passport";
 import ApiError from "../../utils/ApiError";
+import AuthService from "./AuthService";
 
 /**
  * AuthController class handles authentication-related requests.

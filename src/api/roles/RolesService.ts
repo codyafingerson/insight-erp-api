@@ -1,6 +1,6 @@
 import prisma from "../../config/prisma";
-import { UserResponseDto } from "../users/UsersDto";
-import { CreateRoleDto, RoleResponseDto, UpdateRoleDto } from "./RolesDto";
+import type { UserResponseDto } from "../users/UsersDto";
+import type { CreateRoleDto, RoleResponseDto, UpdateRoleDto } from "./RolesDto";
 import ApiError from "../../utils/ApiError";
 
 /**

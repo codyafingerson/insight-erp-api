@@ -1,5 +1,5 @@
 import prisma from "../../config/prisma";
-import { CreateEmployeeDto, UpdateEmployeeDto, EmployeeResponseDto } from "./EmployeesDto";
+import type { CreateEmployeeDto, UpdateEmployeeDto, EmployeeResponseDto } from "./EmployeesDto";
 import ApiError from "../../utils/ApiError";
 
 /**

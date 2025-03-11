@@ -1,70 +1,114 @@
-# Insight ERP - Backend Service
+# 🚀 Insight ERP - Backend Service
 
-## About
+## 📖 About
 
-This backend service powers the Insight ERP (Enterprise Resource Planning) application, supporting the frontend interface. It aims to streamline core business operations for small to medium-sized businesses, including HR, inventory management, customer management, and user management, offering a scalable and efficient management solution. Future enhancements include integrated email-style communication for engaging with customers and prospects, ordering capabilities, and more.
+The **Insight ERP Backend Service** powers the **Insight ERP** (Enterprise Resource Planning) application, providing robust and scalable support for small to medium-sized businesses. 
 
-## Tech Stack
+This service streamlines essential business operations, including:
+- **HR management**
+- **Inventory management**
+- **Customer and user management**  
 
-- ![Node][Nodejs.com]
-- ![TypeScript][TypeScript.com]
-- ![Express.js][Expressjs.com]
-- ![Prisma][Prisma.io]
-- ![Docker][Docker.com]
+---
 
-## Setup
+## 🛠 Tech Stack
 
-### Prerequisites
+| Technology  | Description |
+|-------------|------------|
+| ![Bun][Bun.com] | JavaScript runtime |
+| ![TypeScript][TypeScript.com] | Typed superset of JavaScript |
+| ![Express.js][Expressjs.com] | Web framework for Node.js |
+| ![Prisma][Prisma.io] | ORM for database management |
+| ![Docker][Docker.com] | Containerization for deployment |
 
-- Node.js/npm (if developing locally)
-- Postgres (if developing locally)
-- Bash/zsh
-- Docker
+---
 
-### Installation (Local)
+## 🚀 Getting Started
 
-1.  Clone the repository:
+### 📌 Prerequisites
+Ensure you have the following installed before setup:
 
-    ```sh
-    git clone git@github.com:codyafingerson/insight-erp-api.git
-    ```
+- [Node.js](https://nodejs.org/) & npm (if developing locally)
+- [PostgreSQL](https://www.postgresql.org/) (if developing locally)
+- [Docker](https://www.docker.com/) (for containerized setup)
+- Bash/zsh (for shell scripting)
 
-2.  Install dependencies:
+---
 
-    ```bash
-    npm install
-    ```
+## 🛠 Installation & Setup
 
-    > Note: Run `npm run seed` to seed the database with initial data.
-    >
-    > - username: `root`
-    > - password: `root`
+### 🔧 Local Setup
+1. **Clone the repository**  
+   ```sh
+   git clone git@github.com:codyafingerson/insight-erp-api.git
+   cd insight-erp-api
+   ```
 
-3.  Start the development server:
+2. **Install dependencies**  
+   ```bash
+   npm install
+   ```
 
-    ```bash
-    npm run dev
-    ```
+3. **Seed the database (Optional)**  
+   ```bash
+   npm run seed
+   ```
+   **Default credentials:**
+   - **Username:** `root`
+   - **Password:** `root`
 
-### Installation (Docker)
-1. Clone the repository:
+4. **Start the development server**  
+   ```bash
+   npm run dev
+   ```
+---
 
-    ```sh
-    git clone git@github.com:codyafingerson/insight-erp-api.git
-    ```
-2. Build the Docker image:
+### 🐳 Docker Setup
 
-    ```bash
-    docker compose --profile dev up
-    ```
+1. **Clone the repository**  
+   ```sh
+   git clone git@github.com:codyafingerson/insight-erp-api.git
+   cd insight-erp-api
+   ```
 
-## API Routes
+2. **Build and start the Docker container**  
+   ```bash
+   docker compose --profile dev up
+   ```
 
-Refer to the Postman collection for details on available routes.
+---
 
-> Note: The Postman collection is actively being updated with new features. Contact the project owner for access.
+## 📜 Available Commands
 
-[Nodejs.com]: https://shields.io/badge/Node.js-339933?logo=Node.js&logoColor=FFF&style=flat-square
+| Command | Description |
+|---------|------------|
+| **`npm run dev`** | Starts the application in development mode. |
+| **`npm run build`** | Compiles TypeScript and prepares for production. |
+| **`npm run start`** | Runs the compiled app from the `dist` folder. |
+| **`npm run prisma:migrate`** | Applies the latest Prisma database migrations. |
+| **`npm run prisma:generate`** | Generates the Prisma Client. |
+| **`npm run prisma:deploy`** | Deploys Prisma migrations in production. |
+| **`npm run seed`** | Seeds the database with initial data. |
+
+💡 **Tip:** If using **Bun**, replace `npm run` with `bun run` for optimized performance.
+
+---
+
+## 📡 API Routes
+
+API documentation is available via the Postman collection.
+
+> **Note:** The Postman collection is actively updated. Contact the project owner for access.
+
+---
+
+## 🛡️ License
+
+This project is licensed under [MIT License](LICENSE).
+
+---
+
+[Bun.com]: https://img.shields.io/badge/Bun-000?logo=bun&logoColor=fff
 [TypeScript.com]: https://shields.io/badge/TypeScript-3178C6?logo=TypeScript&logoColor=FFF&style=flat-square
 [Expressjs.com]: https://img.shields.io/badge/Express.js-000000?logo=express&logoColor=fff&style=flat
 [Prisma.io]: https://shields.io/badge/Prisma-2D3748?logo=Prisma&logoColor=FFF&style=flat-square
