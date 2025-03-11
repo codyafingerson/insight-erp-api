@@ -25,7 +25,7 @@ class EmployeesController extends BaseController<EmployeesService> {
     }
 
     async delete(req: Request, res: Response, next: NextFunction) {
-        this.handleRequest(() => this.service.deleteEmployee(req.params.id), res, next, 204);
+        await this.handleRequest(() => this.service.deleteEmployee(req.params.id), res, next, 204);
     }
 }
 
