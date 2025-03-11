@@ -1,6 +1,6 @@
 {
   "name": "insight-erp-api",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Backend RESTful API for Insight ERP - an intuitive ERP solution for SMBs that streamlines operations and fosters collaboration.",
   "main": "dist/Server.js",
   "scripts": {
