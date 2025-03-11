@@ -1,6 +1,6 @@
 import prisma from "../../config/prisma";
 import { comparePasswords, hashPassword } from "../../utils/bcrypt";
-import { CreateUserDto, UpdateUserDto, UserResponseDto } from "./UsersDto";
+import type { CreateUserDto, UpdateUserDto, UserResponseDto } from "./UsersDto";
 import ApiError from "../../utils/ApiError";
 import { sendMailWithTemplate } from "../../utils/mailer";
 import crypto from 'crypto';

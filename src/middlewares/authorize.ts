@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from "express";
-import { AuthenticatedUserDto } from "../api/auth/AuthDto";
+import type { Request, Response, NextFunction } from "express";
+import type { AuthenticatedUserDto } from "../api/auth/AuthDto";
 import ApiError from "../utils/ApiError";
 
 export const authorize = (permission?: string) => {

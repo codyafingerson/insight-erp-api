@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
 import UserService from "./UsersService";
-import { CreateUserDto, UpdateUserDto } from "./UsersDto";
+import type { CreateUserDto, UpdateUserDto } from "./UsersDto";
 import ApiError from "../../utils/ApiError";
 import BaseController from "../BaseController";
 import { sendMailWithTemplate } from "../../utils/mailer";

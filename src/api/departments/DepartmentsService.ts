@@ -1,6 +1,5 @@
 import prisma from "../../config/prisma";
-import { UserResponseDto } from "../users/UsersDto";
-import { CreateDepartmentDto, DepartmentResponseDto } from "./DepartmentsDto";
+import type { CreateDepartmentDto, DepartmentResponseDto } from "./DepartmentsDto";
 
 /**
  * DepartmentsService class handles department-related data operations with Prisma.
