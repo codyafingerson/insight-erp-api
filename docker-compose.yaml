@@ -1,3 +1,14 @@
+x-common_env:
+  &common_env
+  env_file:
+    - .env
+
+x-dev_network: &dev_network
+  name: insight_erp_dev_network
+
+x-prod_network: &prod_network
+  name: insight_erp_prod_network
+
 services:
   # Development environment services
   app_dev:
@@ -10,8 +21,7 @@ services:
         NODE_ENV: development
     volumes:
       - ./src:/app/src
-    env_file:
-      - .env
+    <<: *common_env
     command: >
       sh -c "
         bunx prisma migrate dev &&
@@ -21,7 +31,7 @@ services:
       "
     depends_on:
       postgres_dev:
-        condition: service_healthy # <-- Wait until Postgres is healthy!!
+        condition: service_healthy
       redis_dev:
         condition: service_started
     networks:
@@ -33,15 +43,13 @@ services:
     profiles: [ "dev" ]
     container_name: postgres_dev
     image: postgres:13-alpine
-    env_file:
-      - .env
+    <<: *common_env
     volumes:
       - postgres_dev_data:/var/lib/postgresql/data
     networks:
       - insight_erp_dev_network
     ports:
       - "5432:5432"
-    # Ensure Postgres is truly ready
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
       interval: 5s
@@ -66,15 +74,8 @@ services:
       dockerfile: Dockerfile
       args:
         NODE_ENV: production
-    environment:
-      NODE_ENV: production
-      DB_HOST: postgres_prod
-      DB_PORT: 5432
-      DB_USER: myapp_user
-      DB_NAME: myapp_db
-      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_prod_password
-    secrets:
-      - postgres_prod_password
+    env_file:
+      - /home/ubuntu/.env  # Production env file path
     command: sh -c "bunx prisma migrate deploy && bun run start"
     depends_on:
       - postgres_prod
@@ -88,35 +89,31 @@ services:
     profiles: [ "prod" ]
     container_name: postgres_prod
     image: postgres:13-alpine
-    environment:
-      POSTGRES_USER: myapp_user
-      POSTGRES_DB: myapp_db
-      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_prod_password
-    secrets:
-      - postgres_prod_password
+    env_file:
+      - /home/ubuntu/.env
     volumes:
       - postgres_prod_data:/var/lib/postgresql/data
     networks:
       - insight_erp_prod_network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   redis_prod:
     profiles: [ "prod" ]
     container_name: redis_prod
     image: redis:6-alpine
+    env_file:
+      - /home/ubuntu/.env
     networks:
       - insight_erp_prod_network
 
 networks:
-  insight_erp_dev_network:
-    name: insight_erp_dev_network
-  insight_erp_prod_network:
-    name: insight_erp_prod_network
+  insight_erp_dev_network: *dev_network
+  insight_erp_prod_network: *prod_network
 
 volumes:
   postgres_dev_data:
   postgres_prod_data:
-
-
-secrets:
-  postgres_prod_password:
-    file: ./secrets/postgres_prod_password.txt
