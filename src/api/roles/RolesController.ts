@@ -7,11 +7,7 @@ import BaseController from "../BaseController";
 export default class RolesController extends BaseController<RolesService> {
     constructor(service: RolesService) {
         super(service);
-        this.create = this.create.bind(this);
-        this.getAll = this.getAll.bind(this);
-        this.getById = this.getById.bind(this);
-        this.update = this.update.bind(this);
-        this.delete = this.delete.bind(this);
+
         this.getAllPermissions = this.getAllPermissions.bind(this);
     }
 

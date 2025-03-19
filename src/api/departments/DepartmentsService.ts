@@ -1,4 +1,5 @@
 import prisma from "../../config/prisma";
+import ApiError from "../../utils/ApiError";
 import type { CreateDepartmentDto, DepartmentResponseDto } from "./DepartmentsDto";
 
 /**
@@ -11,7 +12,7 @@ export default class DepartmentsService {
     * Creates a new department.
     * @param {CreateDepartmentDto} data - The department data.
     * @returns {Promise<DepartmentResponseDto>} - The created department.
-    * @throws {Error} - If a department with the same name already exists.
+    * @throws {ApiError} - If a department with the same name already exists.
     */
     async createDepartment(data: CreateDepartmentDto): Promise<DepartmentResponseDto> {
         const existingDepartment = await this.prisma.department.findUnique({
@@ -19,7 +20,7 @@ export default class DepartmentsService {
         });
 
         if (existingDepartment) {
-            throw new Error(`Department with name ${data.name} already exists.`);
+            throw new ApiError(400, `Department with name ${data.name} already exists.`);
         }
 
         return await this.prisma.department.create({
@@ -36,7 +37,7 @@ export default class DepartmentsService {
      * Retrieves a department by its ID.
      * @param {string} id - The department ID.
      * @returns {Promise<DepartmentResponseDto>} - The department object.
-     * @throws {Error} - If the department is not found.
+     * @throws {ApiError} - If the department is not found.
      */
     async getDepartmentById(id: string): Promise<DepartmentResponseDto> {
         const department = await this.prisma.department.findUnique({
@@ -45,7 +46,7 @@ export default class DepartmentsService {
         });
 
         if (!department) {
-            throw new Error(`Department with ID "${id}" not found.`);
+            throw new ApiError(404, `Department with ID "${id}" not found.`);
         }
 
         return department;
@@ -66,7 +67,7 @@ export default class DepartmentsService {
      * @param {string} id - The department ID.
      * @param {CreateDepartmentDto} data - The updated department data.
      * @returns {Promise<DepartmentResponseDto>} - The updated department object.
-     * @throws {Error} - If the department is not found.
+     * @throws {ApiError} - If the department is not found.
      */
     async updateDepartment(id: string, data: CreateDepartmentDto): Promise<DepartmentResponseDto> {
         try {
@@ -76,14 +77,14 @@ export default class DepartmentsService {
                 select: { id: true, name: true, description: true },
             });
         } catch (error) {
-            throw new Error(`Department with ID "${id}" not found.`);
+            throw new ApiError(404, `Department with ID "${id}" not found.`);
         }
     }
 
     /**
      * Deletes a department by its ID.
      * @param {string} id - The department ID.
-     * @throws {Error} - If the department is not found.
+     * @throws {ApiError} - If the department is not found.
      */
     async deleteDepartment(id: string): Promise<void> {
         try {
@@ -92,7 +93,7 @@ export default class DepartmentsService {
             });
         } catch (error) {
             if (error instanceof Error) {
-                throw new Error(`Department with ID "${id}" not found.`);
+                throw new ApiError(404, `Department with ID "${id}" not found.`);
             }
 
             throw error;
@@ -103,7 +104,7 @@ export default class DepartmentsService {
     * Retrieves a department by its name.
     * @param {string} name - The department name.
     * @returns {Promise<DepartmentResponseDto>} - The department object.
-    * @throws {Error} - If the department is not found.
+    * @throws {ApiError} - If the department is not found.
     */
     async getDepartmentByName(name: string): Promise<DepartmentResponseDto> {
         const department = await this.prisma.department.findUnique({
@@ -112,7 +113,7 @@ export default class DepartmentsService {
         });
 
         if (!department) {
-            throw new Error(`Department with name "${name}" not found.`);
+            throw new ApiError(404, `Department with name "${name}" not found.`);
         }
 
         return department;
