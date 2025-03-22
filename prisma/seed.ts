@@ -40,6 +40,8 @@ enum PermissionName {
     UpdateProduct = 'update_product',
     DeleteProduct = 'delete_product',
     ReadAllProducts = 'read_all_products',
+
+    // Product Category-related permissions
     CreateProductCategory = 'create_product_category',
     UpdateProductCategory = 'update_product_category',
     DeleteProductCategory = 'delete_product_category',
