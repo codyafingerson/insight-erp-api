@@ -156,6 +156,16 @@ API testing is available via the Postman collection.
 
 ---
 
+### Product Categories
+| Method | Endpoint                | Description                      | Access  |
+|--------|-------------------------|----------------------------------|---------|
+| `POST`   | `/api/product-category`          | Creates a new product category          | Private (Requires `create_product_category` permission) |
+| `GET`    | `/api/product-category`          | Retrieves all categories         | Private (Requires `read_all_product_categories` permission) |
+| `GET`    | `/api/product-category/:id`      | Retrieves an product category by ID     | Private (Requires `read_all_product_categories` permission) |
+| `PUT`    | `/api/product-category/:id`      | Updates an product category by ID       | Private (Requires `update_product_category` permission) |
+| `DELETE` | `/api/product-category/:id`      | Deletes an product category by ID       | Private (Requires `delete_product_category` permission) |
+
+
 ## 🛡️ License
 
 This project is licensed under [MIT License](LICENSE).
