@@ -78,7 +78,9 @@ class UserController extends BaseController<UserService> {
             const token = await this.service.generateResetToken(email);
             const resetLink = `http://localhost:3000/api/users/reset-password?token=${token}`;
 
-            await sendMailWithTemplate(email, "Password Reset Request", "password-reset", { resetLink });
+            await sendMailWithTemplate(email, "Password Reset Request", "password-reset", {
+                resetLink
+            });
 
             res.status(200).json({ message: "Password reset link sent to your email" });
         } catch (error: any) {
@@ -103,12 +105,12 @@ class UserController extends BaseController<UserService> {
         const { oldPassword, newPassword } = req.body;
 
         if (!userId) {
-            res.status(401).json({ error: 'Unauthorized' });
+            res.status(401).json({ error: "Unauthorized" });
         }
         try {
             // 1. Change the password after verifying the old password
             await this.service.changePassword(userId, oldPassword, newPassword);
-            res.json({ message: 'Password changed successfully.' });
+            res.json({ message: "Password changed successfully." });
         } catch (error: any) {
             next(new ApiError(400, error.message));
         }

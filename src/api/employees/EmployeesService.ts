@@ -17,11 +17,14 @@ export default class EmployeesService {
     async createEmployee(employeeData: any): Promise<EmployeeResponseDto> {
         try {
             const existingEmployee = await this.prisma.employee.findUnique({
-                where: { email: employeeData.email },
+                where: { email: employeeData.email }
             });
 
             if (existingEmployee) {
-                throw new ApiError(400, `Employee with email "${employeeData.email}" already exists.`);
+                throw new ApiError(
+                    400,
+                    `Employee with email "${employeeData.email}" already exists.`
+                );
             }
 
             // Map the incoming data to the CreateEmployeeDto
@@ -36,16 +39,17 @@ export default class EmployeesService {
                 dateOfBirth: new Date(employeeData.dateOfBirth),
                 startDate: new Date(employeeData.startDate),
                 endDate: employeeData.endDate ? new Date(employeeData.endDate) : undefined,
-                employmentType: employeeData.employmentType.toUpperCase().replace('-', '_') as any, // Convert "Full-Time" to "FULL_TIME"
+                employmentType: employeeData.employmentType.toUpperCase().replace("-", "_") as any, // Convert "Full-Time" to "FULL_TIME"
                 managerId: employeeData.managerId,
                 emergencyContactName: employeeData.emergencyContact?.name,
                 emergencyContactRelationship: employeeData.emergencyContact?.relationship,
                 emergencyContactPhoneNumber: employeeData.emergencyContact?.phoneNumber,
                 compensationSalary: employeeData.compensation?.salary,
-                compensationPayStructure: employeeData.compensation?.payStructure.toUpperCase() as any, // Convert "Salary" to "SALARY"
+                compensationPayStructure:
+                    employeeData.compensation?.payStructure.toUpperCase() as any, // Convert "Salary" to "SALARY"
                 timeOffVacationDays: employeeData.timeOffBenefits?.vacationDays,
                 timeOffSickDays: employeeData.timeOffBenefits?.sickDays,
-                timeOffPersonalDays: employeeData.timeOffBenefits?.personalDays,
+                timeOffPersonalDays: employeeData.timeOffBenefits?.personalDays
             };
 
             const newEmployee = await this.prisma.employee.create({
@@ -61,12 +65,12 @@ export default class EmployeesService {
                     endDate: employee.endDate ? new Date(employee.endDate) : null,
                     employmentType: employee.employmentType as any,
                     department: {
-                        connect: { id: employee.departmentId },
+                        connect: { id: employee.departmentId }
                     },
                     manager: employee.managerId
                         ? {
-                            connect: { id: employee.managerId },
-                        }
+                              connect: { id: employee.managerId }
+                          }
                         : undefined,
                     emergencyContactName: employee.emergencyContactName,
                     emergencyContactRelationship: employee.emergencyContactRelationship,
@@ -75,12 +79,12 @@ export default class EmployeesService {
                     compensationPayStructure: employee.compensationPayStructure,
                     timeOffVacationDays: employee.timeOffVacationDays,
                     timeOffSickDays: employee.timeOffSickDays,
-                    timeOffPersonalDays: employee.timeOffPersonalDays,
+                    timeOffPersonalDays: employee.timeOffPersonalDays
                 },
                 include: {
                     department: true,
-                    manager: true,
-                },
+                    manager: true
+                }
             });
 
             return newEmployee;
@@ -101,8 +105,8 @@ export default class EmployeesService {
                     firstName: true,
                     lastName: true,
                     email: true,
-                    department: true,
-                },
+                    department: true
+                }
             });
 
             return employees;
@@ -122,8 +126,8 @@ export default class EmployeesService {
                 where: { id },
                 include: {
                     department: true,
-                    manager: true,
-                },
+                    manager: true
+                }
             });
 
             if (!employee) {
@@ -158,12 +162,12 @@ export default class EmployeesService {
                     endDate: employee.endDate,
                     employmentType: employee.employmentType,
                     department: {
-                        connect: { id: employee.departmentId },
+                        connect: { id: employee.departmentId }
                     },
                     manager: employee.managerId
                         ? {
-                            connect: { id: employee.managerId },
-                        }
+                              connect: { id: employee.managerId }
+                          }
                         : undefined,
                     emergencyContactName: employee.emergencyContactName,
                     emergencyContactRelationship: employee.emergencyContactRelationship,
@@ -172,17 +176,17 @@ export default class EmployeesService {
                     compensationPayStructure: employee.compensationPayStructure,
                     timeOffVacationDays: employee.timeOffVacationDays,
                     timeOffSickDays: employee.timeOffSickDays,
-                    timeOffPersonalDays: employee.timeOffPersonalDays,
+                    timeOffPersonalDays: employee.timeOffPersonalDays
                 },
                 include: {
                     department: true,
-                    manager: true,
-                },
+                    manager: true
+                }
             });
 
-            return updatedEmployee
+            return updatedEmployee;
         } catch (error: any) {
-            if (error.code === 'P2025') {
+            if (error.code === "P2025") {
                 throw new ApiError(404, `Employee with ID "${id}" not found.`);
             }
             throw new ApiError(500, error.message);
@@ -197,12 +201,12 @@ export default class EmployeesService {
     async deleteEmployee(id: string) {
         try {
             const deletedEmployee = await this.prisma.employee.delete({
-                where: { id },
+                where: { id }
             });
 
             return deletedEmployee;
         } catch (error: any) {
-            if (error.code === 'P2025') {
+            if (error.code === "P2025") {
                 throw new ApiError(404, `Employee with ID "${id}" not found.`);
             }
             throw new ApiError(500, error.message);

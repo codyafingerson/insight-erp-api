@@ -15,7 +15,7 @@ export default class AuthController {
      */
     constructor(authService?: AuthService) {
         this.authService = authService ?? new AuthService(); // Use a default instance if none is provided
-        
+
         this.login = this.login.bind(this);
         this.me = this.me.bind(this);
         this.logout = this.logout.bind(this);

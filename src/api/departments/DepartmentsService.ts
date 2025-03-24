@@ -8,14 +8,14 @@ export default class DepartmentsService {
     private prisma = prisma;
 
     /**
-    * Creates a new department.
-    * @param {CreateDepartmentDto} data - The department data.
-    * @returns {Promise<DepartmentResponseDto>} - The created department.
-    * @throws {Error} - If a department with the same name already exists.
-    */
+     * Creates a new department.
+     * @param {CreateDepartmentDto} data - The department data.
+     * @returns {Promise<DepartmentResponseDto>} - The created department.
+     * @throws {Error} - If a department with the same name already exists.
+     */
     async createDepartment(data: CreateDepartmentDto): Promise<DepartmentResponseDto> {
         const existingDepartment = await this.prisma.department.findUnique({
-            where: { name: data.name },
+            where: { name: data.name }
         });
 
         if (existingDepartment) {
@@ -27,8 +27,8 @@ export default class DepartmentsService {
             select: {
                 id: true,
                 name: true,
-                description: true,
-            },
+                description: true
+            }
         });
     }
 
@@ -41,7 +41,7 @@ export default class DepartmentsService {
     async getDepartmentById(id: string): Promise<DepartmentResponseDto> {
         const department = await this.prisma.department.findUnique({
             where: { id },
-            select: { id: true, name: true, description: true },
+            select: { id: true, name: true, description: true }
         });
 
         if (!department) {
@@ -57,7 +57,7 @@ export default class DepartmentsService {
      */
     async getAllDepartments(): Promise<DepartmentResponseDto[]> {
         return await this.prisma.department.findMany({
-            select: { id: true, name: true, description: true },
+            select: { id: true, name: true, description: true }
         });
     }
 
@@ -73,7 +73,7 @@ export default class DepartmentsService {
             return await this.prisma.department.update({
                 where: { id },
                 data,
-                select: { id: true, name: true, description: true },
+                select: { id: true, name: true, description: true }
             });
         } catch (error) {
             throw new Error(`Department with ID "${id}" not found.`);
@@ -88,7 +88,7 @@ export default class DepartmentsService {
     async deleteDepartment(id: string): Promise<void> {
         try {
             await this.prisma.department.delete({
-                where: { id },
+                where: { id }
             });
         } catch (error) {
             if (error instanceof Error) {
@@ -100,15 +100,15 @@ export default class DepartmentsService {
     }
 
     /**
-    * Retrieves a department by its name.
-    * @param {string} name - The department name.
-    * @returns {Promise<DepartmentResponseDto>} - The department object.
-    * @throws {Error} - If the department is not found.
-    */
+     * Retrieves a department by its name.
+     * @param {string} name - The department name.
+     * @returns {Promise<DepartmentResponseDto>} - The department object.
+     * @throws {Error} - If the department is not found.
+     */
     async getDepartmentByName(name: string): Promise<DepartmentResponseDto> {
         const department = await this.prisma.department.findUnique({
             where: { name },
-            select: { id: true, name: true, description: true },
+            select: { id: true, name: true, description: true }
         });
 
         if (!department) {

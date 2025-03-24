@@ -10,15 +10,15 @@ export default class RolesService {
     private prisma = prisma;
 
     /**
-    * Creates a new role.
-    * @param {CreateRoleDto} data - The role data.
-    * @returns {Promise<RoleResponseDto>} - The created role.
-    * @throws {Error} - If a role with the same name already exists.
-    */
+     * Creates a new role.
+     * @param {CreateRoleDto} data - The role data.
+     * @returns {Promise<RoleResponseDto>} - The created role.
+     * @throws {Error} - If a role with the same name already exists.
+     */
     async createRole(data: CreateRoleDto): Promise<RoleResponseDto> {
         try {
             const existingRole = await this.prisma.role.findUnique({
-                where: { name: data.name },
+                where: { name: data.name }
             });
 
             if (existingRole) {
@@ -30,7 +30,7 @@ export default class RolesService {
                 const existingPermissions = await this.prisma.permission.findMany({
                     where: {
                         id: {
-                            in: data.permissions.map(p => p.id)
+                            in: data.permissions.map((p) => p.id)
                         }
                     }
                 });
@@ -45,7 +45,7 @@ export default class RolesService {
                     name: data.name,
                     description: data.description,
                     permissions: {
-                        connect: data.permissions?.map(p => ({ id: p.id }))
+                        connect: data.permissions?.map((p) => ({ id: p.id }))
                     }
                 },
                 select: {
@@ -53,9 +53,9 @@ export default class RolesService {
                     name: true,
                     description: true,
                     permissions: {
-                        select: { id: true, name: true },
+                        select: { id: true, name: true }
                     }
-                },
+                }
             });
         } catch (error: any) {
             if (error instanceof ApiError) {
@@ -75,7 +75,12 @@ export default class RolesService {
         try {
             const role = await this.prisma.role.findUnique({
                 where: { id },
-                select: { id: true, name: true, description: true, permissions: { select: { id: true, name: true } } },
+                select: {
+                    id: true,
+                    name: true,
+                    description: true,
+                    permissions: { select: { id: true, name: true } }
+                }
             });
 
             if (!role) {
@@ -98,7 +103,13 @@ export default class RolesService {
     async getAllRoles(): Promise<RoleResponseDto[]> {
         try {
             return await this.prisma.role.findMany({
-                select: { id: true, isEditable: true, name: true, description: true, permissions: { select: { id: true, name: true } } },
+                select: {
+                    id: true,
+                    isEditable: true,
+                    name: true,
+                    description: true,
+                    permissions: { select: { id: true, name: true } }
+                }
             });
         } catch (error: any) {
             throw new ApiError(500, error.message);
@@ -116,7 +127,7 @@ export default class RolesService {
         try {
             const foundRole = await this.prisma.role.findUnique({
                 where: { id },
-                select: { id: true, isEditable: true },
+                select: { id: true, isEditable: true }
             });
 
             if (!foundRole) {
@@ -132,7 +143,7 @@ export default class RolesService {
                 const existingPermissions = await this.prisma.permission.findMany({
                     where: {
                         id: {
-                            in: data.permissions.map(p => p.id)
+                            in: data.permissions.map((p) => p.id)
                         }
                     }
                 });
@@ -148,7 +159,7 @@ export default class RolesService {
                     name: data.name,
                     description: data.description,
                     permissions: {
-                        set: data.permissions.map(p => ({ id: p.id }))
+                        set: data.permissions.map((p) => ({ id: p.id }))
                     }
                 },
                 select: {
@@ -156,9 +167,9 @@ export default class RolesService {
                     name: true,
                     description: true,
                     permissions: {
-                        select: { id: true, name: true },
+                        select: { id: true, name: true }
                     }
-                },
+                }
             });
         } catch (error: any) {
             if (error instanceof ApiError) {
@@ -177,7 +188,7 @@ export default class RolesService {
         try {
             const roleToDelete = await this.prisma.role.findUnique({
                 where: { id },
-                select: { id: true, isEditable: true },
+                select: { id: true, isEditable: true }
             });
 
             if (!roleToDelete) {
@@ -189,7 +200,7 @@ export default class RolesService {
             }
 
             await this.prisma.role.delete({
-                where: { id },
+                where: { id }
             });
         } catch (error: any) {
             if (error instanceof ApiError) {
@@ -200,16 +211,21 @@ export default class RolesService {
     }
 
     /**
-    * Retrieves a role by its name.
-    * @param {string} name - The role name.
-    * @returns {Promise<RoleResponseDto>} - The role object.
-    * @throws {Error} - If the role is not found.
-    */
+     * Retrieves a role by its name.
+     * @param {string} name - The role name.
+     * @returns {Promise<RoleResponseDto>} - The role object.
+     * @throws {Error} - If the role is not found.
+     */
     async getRoleByName(name: string): Promise<RoleResponseDto> {
         try {
             const role = await this.prisma.role.findUnique({
                 where: { name },
-                select: { id: true, name: true, description: true, permissions: { select: { id: true, name: true } } },
+                select: {
+                    id: true,
+                    name: true,
+                    description: true,
+                    permissions: { select: { id: true, name: true } }
+                }
             });
 
             if (!role) {
@@ -240,8 +256,8 @@ export default class RolesService {
                     username: true,
                     email: true,
                     role: {
-                        select: { id: true, name: true },
-                    },
+                        select: { id: true, name: true }
+                    }
                 }
             });
         } catch (error: any) {
@@ -256,7 +272,7 @@ export default class RolesService {
     async getAllPermissions() {
         try {
             return await this.prisma.permission.findMany({
-                select: { id: true, name: true, description: true },
+                select: { id: true, name: true, description: true }
             });
         } catch (error: any) {
             throw new ApiError(500, error.message);

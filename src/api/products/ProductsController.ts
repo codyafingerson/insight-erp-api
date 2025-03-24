@@ -21,7 +21,12 @@ class ProductsController extends BaseController<ProductsService> {
     }
 
     async update(req: Request, res: Response, next: NextFunction) {
-        this.handleRequest(() => this.service.updateProduct(req.params.id, req.body), res, next, 200);
+        this.handleRequest(
+            () => this.service.updateProduct(req.params.id, req.body),
+            res,
+            next,
+            200
+        );
     }
 
     async delete(req: Request, res: Response, next: NextFunction) {

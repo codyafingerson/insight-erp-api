@@ -1,12 +1,12 @@
-import nodemailer from 'nodemailer';
-import * as expressHandlebars from 'express-handlebars';
-import path from 'path';
-import { logger } from './logger';
-import { environment } from '../config/environment';
+import nodemailer from "nodemailer";
+import * as expressHandlebars from "express-handlebars";
+import path from "path";
+import { logger } from "./logger";
+import { environment } from "../config/environment";
 
 // Create the transporter
 const transporter = nodemailer.createTransport({
-    service: 'Zoho',
+    service: "Zoho",
     host: environment.mail.host,
     port: environment.mail.port,
     secure: true,
@@ -20,14 +20,14 @@ const transporter = nodemailer.createTransport({
 const hbsEngine = expressHandlebars.create({
     extname: ".hbs",
     layoutsDir: path.resolve(__dirname, "../emails"),
-    defaultLayout: false,
+    defaultLayout: false
 });
 
 // Configure handlebars options using the engine instance
 const handlebarOptions = {
     viewEngine: hbsEngine, // now it's a full ExpressHandlebars instance
     viewPath: path.resolve(__dirname, "../emails"),
-    extName: ".hbs",
+    extName: ".hbs"
 };
 
 // A flag to ensure we attach the plugin only once
@@ -35,7 +35,7 @@ let isMailerInitialized = false;
 
 const initializeMailerTemplateEngine = async () => {
     if (!isMailerInitialized) {
-        const { default: hbs } = await import('nodemailer-express-handlebars');
+        const { default: hbs } = await import("nodemailer-express-handlebars");
         transporter.use("compile", hbs(handlebarOptions));
         isMailerInitialized = true;
     }

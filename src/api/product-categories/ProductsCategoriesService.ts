@@ -13,22 +13,26 @@ export default class ProductCategoriesService {
      * @param productCategory - Data to create a new productCategory record.
      * @returns A newly created productCategory.
      */
-    async createProductCategory(productCategoryData: ProductsCategoriesDto): Promise<ProductsCategoriesDto> {
+    async createProductCategory(
+        productCategoryData: ProductsCategoriesDto
+    ): Promise<ProductsCategoriesDto> {
         try {
             const existingProductCategory = await this.prisma.productCategory.findUnique({
-                where: { name: productCategoryData.name },
-
+                where: { name: productCategoryData.name }
             });
 
             if (existingProductCategory) {
-                throw new ApiError(400, `Product category with name "${productCategoryData.name}" already exists.`);
+                throw new ApiError(
+                    400,
+                    `Product category with name "${productCategoryData.name}" already exists.`
+                );
             }
 
             const newProductCategory = await this.prisma.productCategory.create({
                 data: {
                     name: productCategoryData.name,
-                    description: productCategoryData.description,
-                },
+                    description: productCategoryData.description
+                }
             });
 
             return newProductCategory;
@@ -57,7 +61,7 @@ export default class ProductCategoriesService {
     async getProductCategoryById(id: string): Promise<ProductsCategoriesDto> {
         try {
             const productCategory = await this.prisma.productCategory.findUnique({
-                where: { id },
+                where: { id }
             });
 
             if (!productCategory) {
@@ -76,11 +80,14 @@ export default class ProductCategoriesService {
      * @param productCategoryData - The updated product category data.
      * @returns The updated product category.
      */
-    async updateProductCategory(id: string, productCategoryData: any): Promise<ProductsCategoriesDto> {
+    async updateProductCategory(
+        id: string,
+        productCategoryData: any
+    ): Promise<ProductsCategoriesDto> {
         try {
             const updatedProductCategory = await this.prisma.productCategory.update({
                 where: { id },
-                data: productCategoryData,
+                data: productCategoryData
             });
 
             return updatedProductCategory;
@@ -96,7 +103,7 @@ export default class ProductCategoriesService {
     async deleteProductCategory(id: string): Promise<void> {
         try {
             await this.prisma.productCategory.delete({
-                where: { id },
+                where: { id }
             });
         } catch (error) {
             throw new ApiError(500, "Error deleting product category");

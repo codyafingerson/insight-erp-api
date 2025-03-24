@@ -20,25 +20,25 @@ const environment = {
     database: {
         url: ensureEnvVar("DATABASE_URL"),
         ...(isProduction
-            ? {} 
+            ? {}
             : {
                   user: ensureEnvVar("POSTGRES_USER"),
                   password: ensureEnvVar("POSTGRES_PASSWORD"),
-                  db: ensureEnvVar("POSTGRES_DB"),
-              }),
+                  db: ensureEnvVar("POSTGRES_DB")
+              })
     },
 
     redis: {
         host: ensureEnvVar("REDIS_HOST"),
         port: parseInt(ensureEnvVar("REDIS_PORT", "6379")),
-        password: process.env.REDIS_PASSWORD || "",
+        password: process.env.REDIS_PASSWORD || ""
     },
 
     rootUser: {
         name: ensureEnvVar("ROOT_NAME"),
         username: ensureEnvVar("ROOT_USERNAME"),
         email: ensureEnvVar("ROOT_EMAIL"),
-        password: ensureEnvVar("ROOT_PASSWORD"),
+        password: ensureEnvVar("ROOT_PASSWORD")
     },
 
     mail: {
@@ -48,8 +48,10 @@ const environment = {
         password: ensureEnvVar("MAIL_PASSWORD")
     },
     cors: {
-        allowedOrigins: ensureEnvVar("CORS_ALLOWED_ORIGINS") ? ensureEnvVar("CORS_ALLOWED_ORIGINS").split(",") : ["http://localhost:3000"],
-    },
+        allowedOrigins: ensureEnvVar("CORS_ALLOWED_ORIGINS")
+            ? ensureEnvVar("CORS_ALLOWED_ORIGINS").split(",")
+            : ["http://localhost:3000"]
+    }
 };
 
 export { environment };
