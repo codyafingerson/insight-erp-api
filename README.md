@@ -94,6 +94,7 @@ Ensure you have the following installed before setup:
 | **`bun run prisma:generate`** | Generates the Prisma Client. |
 | **`bun run prisma:deploy`** | Deploys Prisma migrations in production. |
 | **`bun run seed`** | Seeds the database with initial data. |
+| **`bun run format`** | Formats project files using prettier |
 
 💡 **Tip:** If using **npm**, replace `bun run` with `npm run` for optimized performance.
 
