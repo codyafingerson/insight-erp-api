@@ -165,6 +165,15 @@ API testing is available via the Postman collection.
 | `PUT`    | `/api/product-category/:id`      | Updates an product category by ID       | Private (Requires `update_product_category` permission) |
 | `DELETE` | `/api/product-category/:id`      | Deletes an product category by ID       | Private (Requires `delete_product_category` permission) |
 
+### Products
+| Method | Endpoint                | Description                      | Access  |
+|--------|-------------------------|----------------------------------|---------|
+| `POST`   | `/api/products`          | Creates a new product         | Private (Requires `create_product` permission) |
+| `GET`    | `/api/products`          | Retrieves all products         | Private (Requires `read_all_products` permission) |
+| `GET`    | `/api/products/:id`      | Retrieves an product ID     | Private (Requires `read_product` permission) |
+| `PUT`    | `/api/products/:id`      | Updates an product ID       | Private (Requires `update_product` permission) |
+| `DELETE` | `/api/products/:id`      | Deletes an product ID       | Private (Requires `delete_product` permission) |
+
 
 ## 🛡️ License
 
