@@ -16,6 +16,8 @@ import UsersRoutes from './api/users/UsersRoutes';
 import AuthRoutes from './api/auth/AuthRoutes';
 import DepartmentsRoutes from './api/departments/DepartmentsRoutes';
 import EmployeesRoutes from './api/employees/EmployeesRoutes';
+import ProductCategoriesRoutes from './api/product-categories/ProductsCategoriesRoutes';
+import ProductRoutes from './api/products/ProductsRoutes';
 import { morganStream } from './utils/logger';
 
 class Server {
@@ -116,6 +118,8 @@ class Server {
         this.app.use('/api/users', UsersRoutes);
         this.app.use('/api/departments', DepartmentsRoutes);
         this.app.use('/api/employees', EmployeesRoutes);
+        this.app.use('/api/product-categories', ProductCategoriesRoutes);
+        this.app.use('/api/products', ProductRoutes);
     }
 }
 
