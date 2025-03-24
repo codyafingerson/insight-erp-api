@@ -1,68 +1,70 @@
 {
-  "name": "insight-erp-api",
-  "module": "src/index.ts",
-  "type": "module",
-  "version": "0.1.0",
-  "main": "src/index.ts",
-  "scripts": {
-    "dev": "bun run src/index.ts",
-    "build": "bun run build.ts",
-    "start": "bun run dist/index.js",
-    "prisma:migrate": "bunx prisma migrate dev",
-    "prisma:generate": "bunx prisma generate",
-    "prisma:deploy": "bunx prisma migrate deploy",
-    "seed": "bunx prisma db seed"
-  },
-  "description": "Powers the Insight ERP (Enterprise Resource Planning) application, providing robust and scalable support for small to medium-sized businesses.",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/insight-erp/insight-erp-api.git"
-  },
-  "author": "Cody Fingerson",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/insight-erp/insight-erp-api/issues"
-  },
-  "homepage": "https://github.com/insight-erp/insight-erp-api#readme",
-  "dependencies": {
-    "@prisma/client": "^6.4.1",
-    "@prisma/extension-accelerate": "^1.2.2",
-    "bcryptjs": "^3.0.2",
-    "connect-redis": "^8.0.2",
-    "cookie-parser": "^1.4.7",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "express-session": "^1.18.1",
-    "helmet": "^8.0.0",
-    "ioredis": "^5.6.0",
-    "morgan": "^1.10.0",
-    "nodemailer": "^6.10.0",
-    "nodemailer-express-handlebars": "^7.0.0",
-    "passport": "^0.7.0",
-    "passport-local": "^1.0.0",
-    "winston": "^3.17.0",
-    "winston-daily-rotate-file": "^5.0.0"
-  },
-  "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
-    "@types/bun": "latest",
-    "@types/cookie-parser": "^1.4.8",
-    "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.0",
-    "@types/express-session": "^1.18.1",
-    "@types/morgan": "^1.9.9",
-    "@types/nodemailer": "^6.4.17",
-    "@types/nodemailer-express-handlebars": "^4.0.5",
-    "@types/passport": "^1.0.17",
-    "@types/passport-local": "^1.0.38",
-    "prisma": "^6.4.1"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
-  "prisma": {
-    "schema": "prisma/schema.prisma",
-    "seed": "bun prisma/seed.ts"
-  }
+    "name": "insight-erp-api",
+    "module": "src/index.ts",
+    "type": "module",
+    "version": "0.1.0",
+    "main": "src/index.ts",
+    "scripts": {
+        "dev": "bun run src/index.ts",
+        "build": "bun run build.ts",
+        "start": "bun run dist/index.js",
+        "prisma:migrate": "bunx prisma migrate dev",
+        "prisma:generate": "bunx prisma generate",
+        "prisma:deploy": "bunx prisma migrate deploy",
+        "seed": "bunx prisma db seed",
+        "format": "prettier --write ."
+    },
+    "description": "Powers the Insight ERP (Enterprise Resource Planning) application, providing robust and scalable support for small to medium-sized businesses.",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/insight-erp/insight-erp-api.git"
+    },
+    "author": "Cody Fingerson",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/insight-erp/insight-erp-api/issues"
+    },
+    "homepage": "https://github.com/insight-erp/insight-erp-api#readme",
+    "dependencies": {
+        "@prisma/client": "^6.4.1",
+        "@prisma/extension-accelerate": "^1.2.2",
+        "bcryptjs": "^3.0.2",
+        "connect-redis": "^8.0.2",
+        "cookie-parser": "^1.4.7",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.7",
+        "express": "^4.21.2",
+        "express-session": "^1.18.1",
+        "helmet": "^8.0.0",
+        "ioredis": "^5.6.0",
+        "morgan": "^1.10.0",
+        "nodemailer": "^6.10.0",
+        "nodemailer-express-handlebars": "^7.0.0",
+        "passport": "^0.7.0",
+        "passport-local": "^1.0.0",
+        "winston": "^3.17.0",
+        "winston-daily-rotate-file": "^5.0.0"
+    },
+    "devDependencies": {
+        "@types/bcryptjs": "^2.4.6",
+        "@types/bun": "latest",
+        "@types/cookie-parser": "^1.4.8",
+        "@types/cors": "^2.8.17",
+        "@types/express": "^5.0.0",
+        "@types/express-session": "^1.18.1",
+        "@types/morgan": "^1.9.9",
+        "@types/nodemailer": "^6.4.17",
+        "@types/nodemailer-express-handlebars": "^4.0.5",
+        "@types/passport": "^1.0.17",
+        "@types/passport-local": "^1.0.38",
+        "prettier": "^3.5.3",
+        "prisma": "^6.4.1"
+    },
+    "peerDependencies": {
+        "typescript": "^5"
+    },
+    "prisma": {
+        "schema": "prisma/schema.prisma",
+        "seed": "bun prisma/seed.ts"
+    }
 }
