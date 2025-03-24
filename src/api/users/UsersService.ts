@@ -3,7 +3,7 @@ import { comparePasswords, hashPassword } from "../../utils/bcrypt";
 import type { CreateUserDto, UpdateUserDto, UserResponseDto } from "./UsersDto";
 import ApiError from "../../utils/ApiError";
 import { sendMailWithTemplate } from "../../utils/mailer";
-import crypto from 'crypto';
+import crypto from "crypto";
 
 /**
  * UserService class handles user-related operations.
@@ -25,11 +25,8 @@ export default class UserService {
         try {
             const userExists = await this.prisma.user.findFirst({
                 where: {
-                    OR: [
-                        { email: data.email },
-                        { username: data.username },
-                    ],
-                },
+                    OR: [{ email: data.email }, { username: data.username }]
+                }
             });
 
             if (userExists) {
@@ -38,8 +35,8 @@ export default class UserService {
 
             const role = await this.prisma.role.findUnique({
                 where: {
-                    id: data.roleId,
-                },
+                    id: data.roleId
+                }
             });
 
             if (!role) {
@@ -52,7 +49,7 @@ export default class UserService {
                     username: data.username,
                     email: data.email,
                     password: await hashPassword(data.password),
-                    roleId: role.id,
+                    roleId: role.id
                 },
                 select: {
                     id: true,
@@ -62,21 +59,16 @@ export default class UserService {
                     role: {
                         select: {
                             id: true,
-                            name: true,
-                        },
-                    },
-                },
+                            name: true
+                        }
+                    }
+                }
             });
 
-            await sendMailWithTemplate(
-                createdUser.email,
-                'Welcome to Insight ERP!',
-                'welcome',
-                {
-                    name: createdUser.name,
-                    username: createdUser.username,
-                }
-            );
+            await sendMailWithTemplate(createdUser.email, "Welcome to Insight ERP!", "welcome", {
+                name: createdUser.name,
+                username: createdUser.username
+            });
 
             return createdUser as UserResponseDto;
         } catch (error: any) {
@@ -96,7 +88,7 @@ export default class UserService {
         try {
             const user = await this.prisma.user.findUnique({
                 where: {
-                    id,
+                    id
                 },
                 select: {
                     id: true,
@@ -106,10 +98,10 @@ export default class UserService {
                     role: {
                         select: {
                             id: true,
-                            name: true,
-                        },
-                    },
-                },
+                            name: true
+                        }
+                    }
+                }
             });
 
             if (!user) {
@@ -131,11 +123,14 @@ export default class UserService {
      * @param {'asc' | 'desc'} order - The sort order.
      * @returns {Promise<Array<UserResponseDto>>} - The list of users.
      */
-    async getAllUsers(sortBy: string = 'name', order: 'asc' | 'desc' = 'asc'): Promise<Array<UserResponseDto>> {
+    async getAllUsers(
+        sortBy: string = "name",
+        order: "asc" | "desc" = "asc"
+    ): Promise<Array<UserResponseDto>> {
         try {
             const users = await this.prisma.user.findMany({
                 orderBy: {
-                    [sortBy]: order,
+                    [sortBy]: order
                 },
                 select: {
                     id: true,
@@ -145,10 +140,10 @@ export default class UserService {
                     role: {
                         select: {
                             id: true,
-                            name: true,
-                        },
-                    },
-                },
+                            name: true
+                        }
+                    }
+                }
             });
 
             return users as Array<UserResponseDto>;
@@ -167,10 +162,10 @@ export default class UserService {
         try {
             const updatedUser = await this.prisma.user.update({
                 where: {
-                    id,
+                    id
                 },
                 data: {
-                    ...user,
+                    ...user
                 },
                 select: {
                     id: true,
@@ -180,15 +175,15 @@ export default class UserService {
                     role: {
                         select: {
                             id: true,
-                            name: true,
-                        },
-                    },
-                },
+                            name: true
+                        }
+                    }
+                }
             });
 
             return updatedUser as UserResponseDto;
         } catch (error: any) {
-            if (error.code === 'P2025') {
+            if (error.code === "P2025") {
                 throw new ApiError(404, `User with ID "${id}" not found.`);
             }
             if (error instanceof ApiError) {
@@ -199,15 +194,15 @@ export default class UserService {
     }
 
     /**
- * Deletes a user.
- * @param {string} id - The user ID.
- * @returns {Promise<UserResponseDto>} - The deleted user.
- */
+     * Deletes a user.
+     * @param {string} id - The user ID.
+     * @returns {Promise<UserResponseDto>} - The deleted user.
+     */
     async deleteUser(id: string): Promise<UserResponseDto> {
         try {
             const deletedUser = await this.prisma.user.delete({
                 where: {
-                    id,
+                    id
                 },
                 select: {
                     id: true,
@@ -217,15 +212,15 @@ export default class UserService {
                     role: {
                         select: {
                             id: true,
-                            name: true,
-                        },
-                    },
-                },
+                            name: true
+                        }
+                    }
+                }
             });
 
             return deletedUser as UserResponseDto;
         } catch (error: any) {
-            if (error.code === 'P2025') {
+            if (error.code === "P2025") {
                 throw new ApiError(404, `User with ID "${id}" not found.`);
             }
             if (error instanceof ApiError) {
@@ -238,12 +233,12 @@ export default class UserService {
     async generateResetToken(email: string): Promise<string> {
         // Find the user by email
         const user = await prisma.user.findUnique({ where: { email } });
-        
+
         if (!user) {
-            throw new ApiError(404, 'User not found');
+            throw new ApiError(404, "User not found");
         }
 
-        const token = crypto.randomBytes(32).toString('hex');
+        const token = crypto.randomBytes(32).toString("hex");
 
         // Calculate expiration time (15 minutes from now)
         const expires = new Date(Date.now() + 15 * 60 * 1000);
@@ -260,17 +255,16 @@ export default class UserService {
         return token;
     }
 
-
     async resetPassword(token: string, newPassword: string): Promise<void> {
         // Find user with this reset token, and ensure token is not expired
         const user = await prisma.user.findFirst({
             where: {
                 resetToken: token,
-                resetTokenExpires: { gt: new Date() }  // token is not expired
+                resetTokenExpires: { gt: new Date() } // token is not expired
             }
-        }) 
+        });
         if (!user) {
-            throw new Error('Invalid or expired reset token');
+            throw new Error("Invalid or expired reset token");
         }
 
         // Hash the new password
@@ -291,12 +285,12 @@ export default class UserService {
     async changePassword(userId: string, oldPassword: string, newPassword: string): Promise<void> {
         // Find the user by ID
         const user = await prisma.user.findUnique({ where: { id: userId } });
-        if (!user) throw new Error('User not found');
+        if (!user) throw new Error("User not found");
 
         // Verify the old password matches the stored password
         const passwordMatch = await comparePasswords(oldPassword, user.password);
         if (!passwordMatch) {
-            throw new Error('Old password is incorrect');
+            throw new Error("Old password is incorrect");
         }
 
         // Hash the new password and save it

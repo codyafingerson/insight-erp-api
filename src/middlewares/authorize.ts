@@ -13,9 +13,7 @@ export const authorize = (permission?: string) => {
             const user = req.user as AuthenticatedUserDto;
 
             // Check if the user's role includes the required permission.
-            const hasPermission = user.role?.permissions.some(
-                (perm) => perm.name === permission
-            );
+            const hasPermission = user.role?.permissions.some((perm) => perm.name === permission);
 
             if (!hasPermission) {
                 return next(new ApiError(403, "Forbidden"));

@@ -9,7 +9,7 @@ passport.use(
     new LocalStrategy(
         {
             usernameField: "username",
-            passwordField: "password",
+            passwordField: "password"
         },
         async (username, password, done) => {
             try {

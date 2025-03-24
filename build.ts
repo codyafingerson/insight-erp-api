@@ -5,7 +5,7 @@ import path from "path";
 // Ensure `dist` folder exists
 const distDir = "dist";
 if (!fs.existsSync(distDir)) {
-  fs.mkdirSync(distDir);
+    fs.mkdirSync(distDir);
 }
 
 // Generate Prisma Client before building
@@ -13,8 +13,8 @@ await $`bunx prisma generate`;
 
 // Compile TypeScript with Bun
 await Bun.build({
-    entrypoints: ['./src/index.ts'],
-    outdir: './dist',
+    entrypoints: ["./src/index.ts"],
+    outdir: "./dist",
     target: "node",
     minify: true
 });

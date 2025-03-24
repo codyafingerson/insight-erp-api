@@ -13,12 +13,12 @@ export default class DepartmentsController extends BaseController<DepartmentsSer
     }
 
     /**
-    * Creates a new department.
-    * @param {Request} req - The Express request object.
-    * @param {Response} res - The Express response object.
-    * @param {NextFunction} next - The Express next function.
-    * @returns {Promise<void>}
-    */
+     * Creates a new department.
+     * @param {Request} req - The Express request object.
+     * @param {Response} res - The Express response object.
+     * @param {NextFunction} next - The Express next function.
+     * @returns {Promise<void>}
+     */
     async create(req: Request, res: Response, next: NextFunction): Promise<void> {
         const { name, description } = req.body;
         if (!name) {
@@ -55,27 +55,37 @@ export default class DepartmentsController extends BaseController<DepartmentsSer
     }
 
     /**
-    * Updates a department.
-    * @param {Request} req - The Express request object.
-    * @param {Response} res - The Express response object.
-    * @param {NextFunction} next - The Express next function.
-    * @returns {Promise<void>}
-    */
+     * Updates a department.
+     * @param {Request} req - The Express request object.
+     * @param {Response} res - The Express response object.
+     * @param {NextFunction} next - The Express next function.
+     * @returns {Promise<void>}
+     */
     async update(req: Request, res: Response, next: NextFunction): Promise<void> {
-        await this.handleRequest(() => this.service.updateDepartment(req.params.id, req.body), res, next, 200);
+        await this.handleRequest(
+            () => this.service.updateDepartment(req.params.id, req.body),
+            res,
+            next,
+            200
+        );
     }
 
     /**
-    * Deletes a department.
-    * @param {Request} req - The Express request object.
-    * @param {Response} res - The Express response object.
-    * @param {NextFunction} next - The Express next function.
-    * @returns {Promise<void>}
-    */
+     * Deletes a department.
+     * @param {Request} req - The Express request object.
+     * @param {Response} res - The Express response object.
+     * @param {NextFunction} next - The Express next function.
+     * @returns {Promise<void>}
+     */
     async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
-        await this.handleRequest(async () => {
-            await this.service.deleteDepartment(req.params.id);
-            return null;
-        }, res, next, 204);
+        await this.handleRequest(
+            async () => {
+                await this.service.deleteDepartment(req.params.id);
+                return null;
+            },
+            res,
+            next,
+            204
+        );
     }
 }

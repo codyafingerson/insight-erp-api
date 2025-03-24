@@ -8,21 +8,21 @@ datasource db {
 }
 
 model User {
-  id       String  @id @default(cuid())
-  isActive Boolean @default(true)
-  roleId   String
-  role     Role    @relation(fields: [roleId], references: [id])
-  name     String
-  username String  @unique
-  email    String  @unique
-  password String
-  resetToken String?
+  id                String    @id @default(cuid())
+  isActive          Boolean   @default(true)
+  roleId            String
+  role              Role      @relation(fields: [roleId], references: [id])
+  name              String
+  username          String    @unique
+  email             String    @unique
+  password          String
+  resetToken        String?
   resetTokenExpires DateTime?
 }
 
 model Role {
-  id          String       @id @default(cuid())
-  name        String       @unique
+  id          String  @id @default(cuid())
+  name        String  @unique
   description String?
   users       User[]
   isEditable  Boolean @default(true)
@@ -37,12 +37,12 @@ model Permission {
   description String?
 
   // Implicit many-to-many with Role
-  roles       Role[]
+  roles Role[]
 }
 
 model Department {
-  id   String  @id @default(cuid())
-  name String  @unique
+  id          String  @id @default(cuid())
+  name        String  @unique
   description String?
 
   employees Employee[]
@@ -57,10 +57,10 @@ enum Status {
 
 /// Represents the type of employment.
 enum EmploymentType {
-  FULL_TIME   @map("Full-Time")
-  PART_TIME   @map("Part-Time")
-  CONTRACT    @map("Contract")
-  INTERNSHIP  @map("Internship")
+  FULL_TIME  @map("Full-Time")
+  PART_TIME  @map("Part-Time")
+  CONTRACT   @map("Contract")
+  INTERNSHIP @map("Internship")
 }
 
 /// Represents the pay structure in the compensation info.
@@ -71,30 +71,30 @@ enum PayStructure {
 }
 
 model Employee {
-  id                  String           @id @default(uuid())
-  status              Status           @default(ACTIVE)
-  firstName           String
-  lastName            String
-  email               String           @unique
-  position            String
+  id        String @id @default(uuid())
+  status    Status @default(ACTIVE)
+  firstName String
+  lastName  String
+  email     String @unique
+  position  String
 
   // Relation to the Department model.
-  departmentId        String
-  department          Department       @relation(fields: [departmentId], references: [id])
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id])
 
-  phoneNumber         String
-  address             String
-  dateOfBirth         DateTime
-  startDate           DateTime
-  endDate             DateTime?
+  phoneNumber String
+  address     String
+  dateOfBirth DateTime
+  startDate   DateTime
+  endDate     DateTime?
 
-  employmentType      EmploymentType
+  employmentType EmploymentType
 
   // Self–relation: an employee may have a manager.
-  managerId           String?
-  manager             Employee?        @relation("EmployeeManager", fields: [managerId], references: [id])
+  managerId    String?
+  manager      Employee?  @relation("EmployeeManager", fields: [managerId], references: [id])
   // Back–relation: list of employees reporting to this manager.
-  subordinates        Employee[]       @relation("EmployeeManager")
+  subordinates Employee[] @relation("EmployeeManager")
 
   // Flattened fields for emergency contact.
   emergencyContactName         String?
@@ -102,34 +102,34 @@ model Employee {
   emergencyContactPhoneNumber  String?
 
   // Flattened fields for compensation (required).
-  compensationSalary         Float
-  compensationPayStructure   PayStructure
+  compensationSalary       Float
+  compensationPayStructure PayStructure
 
   // Flattened fields for time off benefits.
-  timeOffVacationDays        Int?
-  timeOffSickDays            Int?
-  timeOffPersonalDays        Int?
+  timeOffVacationDays Int?
+  timeOffSickDays     Int?
+  timeOffPersonalDays Int?
 
-  createdAt            DateTime         @default(now())
-  updatedAt            DateTime         @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model ProductCategory {
-  id          String   @id @default(cuid())
-  name        String   @unique
+  id          String    @id @default(cuid())
+  name        String    @unique
   description String?
   products    Product[]
 }
 
 model Product {
-  id          String   @id @default(cuid())
-  isActive    Boolean  @default(true)
-  name        String   @unique
+  id          String          @id @default(cuid())
+  isActive    Boolean         @default(true)
+  name        String          @unique
   description String?
   price       Float
   stock       Int
   categoryId  String
   category    ProductCategory @relation(fields: [categoryId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
 }

@@ -43,6 +43,6 @@ router.put("/:id", authorize("update_product_category"), productCategoriesContro
  * @description Deletes a employee by ID.
  * @access Private
  */
-router.delete("/:id", authorize("delete_product_category"), productCategoriesController.delete)
+router.delete("/:id", authorize("delete_product_category"), productCategoriesController.delete);
 
 export default router;

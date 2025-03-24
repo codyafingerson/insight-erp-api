@@ -9,13 +9,13 @@ export interface CreateEmployeeDto {
     dateOfBirth: Date;
     startDate: Date;
     endDate?: Date;
-    employmentType: 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'INTERNSHIP';
+    employmentType: "FULL_TIME" | "PART_TIME" | "CONTRACT" | "INTERNSHIP";
     managerId?: string;
     emergencyContactName?: string;
     emergencyContactRelationship?: string;
     emergencyContactPhoneNumber?: string;
     compensationSalary: number;
-    compensationPayStructure: 'HOURLY' | 'SALARY' | 'COMMISSION';
+    compensationPayStructure: "HOURLY" | "SALARY" | "COMMISSION";
     timeOffVacationDays?: number;
     timeOffSickDays?: number;
     timeOffPersonalDays?: number;
@@ -38,7 +38,7 @@ export interface EmployeeResponseDto {
     dateOfBirth: Date;
     startDate: Date;
     endDate?: Date;
-    employmentType: 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'INTERNSHIP';
+    employmentType: "FULL_TIME" | "PART_TIME" | "CONTRACT" | "INTERNSHIP";
     manager?: {
         id: string;
         firstName: string;
@@ -48,7 +48,7 @@ export interface EmployeeResponseDto {
     emergencyContactRelationship?: string;
     emergencyContactPhoneNumber?: string;
     compensationSalary: number;
-    compensationPayStructure: 'HOURLY' | 'SALARY' | 'COMMISSION';
+    compensationPayStructure: "HOURLY" | "SALARY" | "COMMISSION";
     timeOffVacationDays?: number;
     timeOffSickDays?: number;
     timeOffPersonalDays?: number;

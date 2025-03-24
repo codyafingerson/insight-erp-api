@@ -16,7 +16,7 @@ export default class ProductsService {
     async createProduct(productData: ProductsDto): Promise<ProductsDto> {
         try {
             const existingProduct = await this.prisma.product.findUnique({
-                where: { name: productData.name },
+                where: { name: productData.name }
             });
 
             if (existingProduct) {
@@ -30,11 +30,11 @@ export default class ProductsService {
                     description: productData.description,
                     price: productData.price,
                     stock: productData.stock,
-                    categoryId: productData.categoryId,
+                    categoryId: productData.categoryId
                 },
                 include: {
-                    category: true,
-                },
+                    category: true
+                }
             });
 
             return newProduct;
@@ -50,8 +50,8 @@ export default class ProductsService {
         try {
             const products = await this.prisma.product.findMany({
                 include: {
-                    category: true,
-                },
+                    category: true
+                }
             });
             return products;
         } catch (error) {
@@ -69,8 +69,8 @@ export default class ProductsService {
             const product = await this.prisma.product.findUnique({
                 where: { id },
                 include: {
-                    category: true,
-                },
+                    category: true
+                }
             });
 
             if (!product) {
@@ -95,8 +95,8 @@ export default class ProductsService {
                 where: { id },
                 data: productData,
                 include: {
-                    category: true,
-                },
+                    category: true
+                }
             });
 
             return updatedProduct;
@@ -112,7 +112,7 @@ export default class ProductsService {
     async deleteProduct(id: string): Promise<void> {
         try {
             await this.prisma.product.delete({
-                where: { id },
+                where: { id }
             });
         } catch (error) {
             throw new ApiError(500, "Error deleting product");

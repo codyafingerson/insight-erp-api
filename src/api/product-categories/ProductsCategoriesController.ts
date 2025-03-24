@@ -21,11 +21,20 @@ class ProductCategoriesController extends BaseController<ProductCategoriesServic
     }
 
     async update(req: Request, res: Response, next: NextFunction) {
-        this.handleRequest(() => this.service.updateProductCategory(req.params.id, req.body), res, next);
+        this.handleRequest(
+            () => this.service.updateProductCategory(req.params.id, req.body),
+            res,
+            next
+        );
     }
 
     async delete(req: Request, res: Response, next: NextFunction) {
-        await this.handleRequest(() => this.service.deleteProductCategory(req.params.id), res, next, 204);
+        await this.handleRequest(
+            () => this.service.deleteProductCategory(req.params.id),
+            res,
+            next,
+            204
+        );
     }
 }
 
