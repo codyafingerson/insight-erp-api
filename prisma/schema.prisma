@@ -123,7 +123,7 @@ model ProductCategory {
 
 model Product {
   id          String   @id @default(cuid())
-  isActive   Boolean  @default(true)
+  isActive    Boolean  @default(true)
   name        String   @unique
   description String?
   price       Float
