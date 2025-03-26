@@ -1,10 +1,10 @@
-import type { Request, Response, NextFunction } from "express";
+import type { NextFunction, Request, Response } from "express";
 import ApiError from "../utils/ApiError";
 
 abstract class BaseController<T> {
     protected readonly service: T;
 
-    constructor(service: T) {
+    protected constructor(service: T) {
         this.service = service;
         this.create = this.create.bind(this);
         this.getAll = this.getAll.bind(this);
