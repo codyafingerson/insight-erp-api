@@ -5,10 +5,10 @@ import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import cors from "cors";
 import session from "express-session";
-import passport from "./config/passport";
+import passport from "./config/auth/passport.ts"
 import errorHandler from "./middlewares/errorMiddleware";
 import { RedisStore } from "connect-redis";
-import { redisClient } from "./config/redis";
+import { redisClient } from "./config/database/redis";
 import { morganStream } from "./utils/logger";
 
 // Controllers
