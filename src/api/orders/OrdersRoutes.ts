@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { PermissionName } from "../../config/permissions.ts";
+import { PermissionName } from "../../config/auth/permissions.ts";
 import OrdersController from "./OrdersController.ts";
 import OrdersService from "./OrdersService.ts";
 // Middleware
