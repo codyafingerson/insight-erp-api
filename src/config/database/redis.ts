@@ -1,5 +1,5 @@
 import Redis from "ioredis";
-import { environment } from "./environment";
+import { environment } from "../environment";
 
 // Create an ioredis client instance.
 const redisClient = new Redis({
