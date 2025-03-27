@@ -1,4 +1,4 @@
-import type { Request, Response, NextFunction } from "express";
+import type { NextFunction, Request, Response } from "express";
 import DepartmentsService from "./DepartmentsService";
 import type { CreateDepartmentDto } from "./DepartmentsDto";
 import ApiError from "../../utils/ApiError";
@@ -87,5 +87,21 @@ export default class DepartmentsController extends BaseController<DepartmentsSer
             next,
             204
         );
+    }
+
+    /**
+     * Retrieves a department by name.
+     * @param {Request} req - The Express request object.
+     * @param {Response} res - The Express response object.
+     * @param {NextFunction} next - The Express next function.
+     * @param next
+     */
+    async getDepartmentByName(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const { name } = req.params;
+        if (!name) {
+            return next(new ApiError(400, "Department name is required."));
+        }
+
+        await this.handleRequest(() => this.service.getDepartmentByName(name), res, next, 200);
     }
 }
