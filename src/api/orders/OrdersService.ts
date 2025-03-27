@@ -1,4 +1,4 @@
-import prisma from "../../config/prisma";
+import prisma from "../../config/database/prisma";
 import type { OrderDto, OrderItemDto } from "./OrdersDto.ts";
 import ApiError from "../../utils/ApiError";
 
