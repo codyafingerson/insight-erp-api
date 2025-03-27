@@ -1,7 +1,7 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
-import AuthService from "../api/auth/AuthService";
-import prisma from "./prisma";
+import AuthService from "../../api/auth/AuthService";
+import prisma from "../database/prisma";
 
 const authService = new AuthService();
 
