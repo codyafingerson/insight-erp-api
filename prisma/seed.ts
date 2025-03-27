@@ -1,3 +1,5 @@
+import { type Permission, PrismaClient } from "@prisma/client";
+import { PermissionName } from "../src/config/permissions.ts";
 import { PrismaClient, type Permission } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import dotenv from "dotenv";

@@ -1,14 +1,13 @@
 import { Router } from "express";
 import DepartmentsController from "./DepartmentsController";
 import DepartmentsService from "./DepartmentsService";
+// Middleware
+import { authorize } from "../../middlewares/authorize";
 
 const router = Router();
 
 const departmentsService = new DepartmentsService();
 const departmentsController = new DepartmentsController(departmentsService);
-
-// Middleware
-import { authorize } from "../../middlewares/authorize";
 
 /**
  * @route POST /api/departments
@@ -30,6 +29,13 @@ router.get("/", authorize("read_all_departments"), departmentsController.getAll)
  * @access Private
  */
 router.get("/:id", authorize("read_all_departments"), departmentsController.getById);
+
+/**
+ * @route GET /api/departments/:name
+ * @description Retrieves a department by name.
+ * @access Private
+ */
+router.get("/:name", authorize("read_all_departments"), departmentsController.getDepartmentByName);
 
 /**
  * @route PUT /api/departments/:id
