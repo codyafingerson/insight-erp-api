@@ -39,6 +39,7 @@ export default class RolesController extends BaseController<RolesService> {
     async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
         // Wrap in an async function so we can return null and avoid sending back data.
         await this.handleRequest(
+        this.handleRequest(
             async () => {
                 await this.service.deleteRole(req.params.id);
                 return null;
