@@ -128,6 +128,19 @@ API testing is available via the Postman collection.
 
 ---
 
+### Departments
+
+| Method   | Endpoint                 | Description                    | Access                                               |
+|----------|--------------------------|--------------------------------|------------------------------------------------------|
+| `POST`   | `/api/departments`       | Creates a new department       | Private (Requires `create_department` permission)    |
+| `GET`    | `/api/departments`       | Retrieves all departments      | Private (Requires `read_all_departments` permission) |
+| `GET`    | `/api/departments/:id`   | Retrieves a department by ID   | Private (Requires `read_all_departments` permission) |
+| `GET`    | `/api/departments/:name` | Retrieves a department by name | Private (Requires `read_all_departments` permission) |
+| `PUT`    | `/api/departments/:id`   | Updates a department by ID     | Private (Requires `update_department` permission)    |
+| `DELETE` | `/api/departments/:id`   | Deletes a department by ID     | Private (Requires `delete_department` permission)    |
+
+--- 
+
 ### Roles
 
 | Method | Endpoint                | Description                      | Access  |
