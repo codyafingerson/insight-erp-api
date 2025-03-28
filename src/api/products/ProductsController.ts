@@ -1,36 +1,51 @@
 import type { NextFunction, Request, Response } from "express";
 import BaseController from "../BaseController";
 import ProductsService from "./ProductsService";
+import ApiError from "../../utils/ApiError";
 
 class ProductsController extends BaseController<ProductsService> {
-    constructor(productsService: ProductsService) {
-        super(productsService);
+    constructor(service: ProductsService) {
+        super(service);
     }
 
-    async create(req: Request, res: Response, next: NextFunction) {
-        this.handleRequest(() => this.service.createProduct(req.body), res, next, 201);
+    async create(req: Request, res: Response, next: NextFunction): Promise<void> {
+        await this.handleRequest(() => this.service.createProduct(req.body), res, next, 201);
     }
 
-    async getAll(req: Request, res: Response, next: NextFunction) {
-        this.handleRequest(() => this.service.getProducts(), res, next);
+    async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
+        await this.handleRequest(() => this.service.getProducts(), res, next);
     }
 
-    async getById(req: Request, res: Response, next: NextFunction) {
+    async getById(req: Request, res: Response, next: NextFunction): Promise<void> {
         const { id } = req.params;
-        this.handleRequest(() => this.service.getProductById(id), res, next);
+        if (!id) {
+            return next(new ApiError(400, "No ID provided."));
+        }
+        await this.handleRequest(() => this.service.getProductById(id), res, next);
     }
 
-    async update(req: Request, res: Response, next: NextFunction) {
-        this.handleRequest(
-            () => this.service.updateProduct(req.params.id, req.body),
+    async update(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const { id } = req.params;
+        if (!id) {
+            return next(new ApiError(400, "No ID provided."));
+        }
+        await this.handleRequest(() => this.service.updateProduct(id, req.body), res, next, 200);
+    }
+
+    async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const { id } = req.params;
+        if (!id) {
+            return next(new ApiError(400, "No ID provided."));
+        }
+        await this.handleRequest(
+            async () => {
+                await this.service.deleteProduct(id);
+                return null;
+            },
             res,
             next,
-            200
+            204
         );
-    }
-
-    async delete(req: Request, res: Response, next: NextFunction) {
-        await this.handleRequest(() => this.service.deleteProduct(req.params.id), res, next, 204);
     }
 }
 
