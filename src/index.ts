@@ -100,7 +100,7 @@ class Server {
                 cookie: {
                     httpOnly: true,
                     secure: environment.nodeEnv === "production",
-                    sameSite: "none",
+                    sameSite: "lax",
                     maxAge: 1000 * 60 * 60 // 1 hour
                 }
             })
