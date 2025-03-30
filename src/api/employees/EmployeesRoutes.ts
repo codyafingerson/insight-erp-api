@@ -9,40 +9,41 @@ const employeesController = new EmployeesController(employeesService);
 
 // Middleware
 import { authorize } from "../../middlewares/authorize";
+import { PermissionName } from "../../config/auth/permissions";
 
 /**
  * @route POST /api/employees
  * @description Creates a new employee.
  * @access Private
  */
-router.post("/", authorize("create_employee"), employeesController.create);
+router.post("/", authorize(PermissionName.CreateEmployee), employeesController.create);
 
 /**
  * @route GET /api/employees
  * @description Retrieves all employees.
  * @access Private
  */
-router.get("/", authorize("read_all_employees"), employeesController.getAll);
+router.get("/", authorize(PermissionName.ReadAllEmployees), employeesController.getAll);
 
 /**
  * @route GET /api/employees/:id
  * @description Retrieves a employee by ID.
  * @access Private
  */
-router.get("/:id", authorize("read_all_employees"), employeesController.getById);
+router.get("/:id", authorize(PermissionName.ReadAllEmployees), employeesController.getById);
 
 /**
  * @route PUT /api/employees/:id
  * @description Updates a employee by ID.
  * @access Private
  */
-router.put("/:id", authorize("update_employee"), employeesController.update);
+router.put("/:id", authorize(PermissionName.UpdateEmployee), employeesController.update);
 
 /**
  * @route DELETE /api/employees/:id
  * @description Deletes a employee by ID.
  * @access Private
  */
-router.delete("/:id", authorize("delete_employee"), employeesController.delete);
+router.delete("/:id", authorize(PermissionName.DeleteEmployee), employeesController.delete);
 
 export default router;

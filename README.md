@@ -94,6 +94,7 @@ Ensure you have the following installed before setup:
 | **`bun run prisma:generate`** | Generates the Prisma Client. |
 | **`bun run prisma:deploy`** | Deploys Prisma migrations in production. |
 | **`bun run seed`** | Seeds the database with initial data. |
+| **`bun run format`** | Formats project files using prettier |
 
 💡 **Tip:** If using **npm**, replace `bun run` with `npm run` for optimized performance.
 
@@ -126,6 +127,18 @@ API testing is available via the Postman collection.
 | `DELETE` | `/api/employees/:id`      | Deletes an employee by ID       | Private (Requires `delete_employee` permission) |
 
 ---
+
+### Departments
+
+| Method   | Endpoint                 | Description                    | Access                                               |
+|----------|--------------------------|--------------------------------|------------------------------------------------------|
+| `POST`   | `/api/departments`       | Creates a new department       | Private (Requires `create_department` permission)    |
+| `GET`    | `/api/departments`       | Retrieves all departments      | Private (Requires `read_all_departments` permission) |
+| `GET`    | `/api/departments/:id`   | Retrieves a department by ID   | Private (Requires `read_all_departments` permission) |
+| `PUT`    | `/api/departments/:id`   | Updates a department by ID     | Private (Requires `update_department` permission)    |
+| `DELETE` | `/api/departments/:id`   | Deletes a department by ID     | Private (Requires `delete_department` permission)    |
+
+--- 
 
 ### Roles
 
@@ -174,12 +187,25 @@ API testing is available via the Postman collection.
 | `PUT`    | `/api/products/:id`      | Updates an product ID       | Private (Requires `update_product` permission) |
 | `DELETE` | `/api/products/:id`      | Deletes an product ID       | Private (Requires `delete_product` permission) |
 
+---
+
+### Orders
+| Method | Endpoint         | Description                   | Access |
+|--------|-----------------|-------------------------------|------------------------------------------|
+| POST   | /api/orders     | Creates a new order          | Private (Requires `create_order` permission) |
+| GET    | /api/orders     | Retrieves all orders         | Private (Requires `read_all_orders` permission) |
+| GET    | /api/orders/:id | Retrieves an order by ID     | Private (Requires `read_all_orders` permission) |
+| PUT    | /api/orders/:id | Updates an order by ID       | Private (Requires `update_order` permission) |
+| DELETE | /api/orders/:id | Deletes an order by ID       | Private (Requires `delete_order` permission) |
+
+---
 
 ## 🛡️ License
 
 This project is licensed under [MIT License](LICENSE).
 
 ---
+
 
 [Bun.com]: https://img.shields.io/badge/Bun-000?logo=bun&logoColor=fff
 [TypeScript.com]: https://shields.io/badge/TypeScript-3178C6?logo=TypeScript&logoColor=FFF&style=flat-square

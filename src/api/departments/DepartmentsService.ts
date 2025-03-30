@@ -1,5 +1,6 @@
-import prisma from "../../config/prisma";
+import prisma from "../../config/database/prisma";
 import type { CreateDepartmentDto, DepartmentResponseDto } from "./DepartmentsDto";
+import ApiError from "../../utils/ApiError.ts";
 
 /**
  * DepartmentsService class handles department-related data operations with Prisma.
@@ -19,7 +20,7 @@ export default class DepartmentsService {
         });
 
         if (existingDepartment) {
-            throw new Error(`Department with name ${data.name} already exists.`);
+            throw new ApiError(400, `Department with name ${data.name} already exists.`);
         }
 
         return await this.prisma.department.create({
@@ -76,7 +77,7 @@ export default class DepartmentsService {
                 select: { id: true, name: true, description: true }
             });
         } catch (error) {
-            throw new Error(`Department with ID "${id}" not found.`);
+            throw new ApiError(400, error.message);
         }
     }
 
@@ -92,7 +93,7 @@ export default class DepartmentsService {
             });
         } catch (error) {
             if (error instanceof Error) {
-                throw new Error(`Department with ID "${id}" not found.`);
+                throw new ApiError(400, error.message);
             }
 
             throw error;
@@ -112,7 +113,7 @@ export default class DepartmentsService {
         });
 
         if (!department) {
-            throw new Error(`Department with name "${name}" not found.`);
+            throw new ApiError(400, `Department with ID "${name}" not found.`);
         }
 
         return department;

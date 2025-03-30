@@ -1,4 +1,4 @@
-import prisma from "../../config/prisma";
+import prisma from "../../config/database/prisma";
 import { comparePasswords, hashPassword } from "../../utils/bcrypt";
 import type { CreateUserDto, UpdateUserDto, UserResponseDto } from "./UsersDto";
 import ApiError from "../../utils/ApiError";

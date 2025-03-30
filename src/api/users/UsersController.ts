@@ -15,105 +15,108 @@ class UserController extends BaseController<UserService> {
     }
 
     async create(req: Request, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const { isActive = true, roleId, name, username, email, password } = req.body;
-            const data: CreateUserDto = { isActive, roleId, name, username, email, password };
-            const user = await this.service.createUser(data);
-
-            res.status(201).json(user);
-        } catch (error: any) {
-            next(new ApiError(400, error.message));
-        }
+        await this.handleRequest(
+            () => this.service.createUser(req.body as CreateUserDto),
+            res,
+            next,
+            201
+        );
     }
 
     async update(req: Request, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const { id } = req.params;
-            const { isActive, roleId, name, username, email, password } = req.body;
-            const data: UpdateUserDto = { isActive, roleId, name, username, email, password };
-            const user = await this.service.updateUser(id, data);
-
-            res.status(200).json(user);
-        } catch (error: any) {
-            next(new ApiError(400, error.message));
+        const { id } = req.params;
+        if (!id) {
+            return next(new ApiError(400, "User ID is required."));
         }
+
+        await this.handleRequest(
+            () => this.service.updateUser(id, req.body as UpdateUserDto),
+            res,
+            next,
+            200
+        );
     }
 
     async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const users = await this.service.getAllUsers();
-
-            res.status(200).json(users);
-        } catch (error: any) {
-            next(new ApiError(500, error.message));
-        }
+        await this.handleRequest(() => this.service.getAllUsers(), res, next);
     }
 
     async getById(req: Request, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const { id } = req.params;
-            const user = await this.service.getUserById(id);
-
-            res.status(200).json(user);
-        } catch (error: any) {
-            next(new ApiError(400, error.message));
+        const { id } = req.params;
+        if (!id) {
+            return next(new ApiError(400, "User ID is required."));
         }
+
+        await this.handleRequest(() => this.service.getUserById(id), res, next);
     }
 
     async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
-        try {
-            const { id } = req.params;
-            await this.service.deleteUser(id);
-
-            res.status(204).end();
-        } catch (error: any) {
-            next(new ApiError(400, error.message));
+        const { id } = req.params;
+        if (!id) {
+            return next(new ApiError(400, "User ID is required."));
         }
+
+        await this.handleRequest(
+            async () => {
+                await this.service.deleteUser(id);
+                return null;
+            },
+            res,
+            next,
+            204
+        );
     }
 
     async requestPasswordReset(req: Request, res: Response, next: NextFunction): Promise<void> {
         const { email } = req.body;
+        if (!email) {
+            return next(new ApiError(400, "Email is required."));
+        }
 
-        try {
+        await this.handleRequest(async () => {
             const token = await this.service.generateResetToken(email);
             const resetLink = `http://localhost:3000/api/users/reset-password?token=${token}`;
 
             await sendMailWithTemplate(email, "Password Reset Request", "password-reset", {
-                resetLink
+                resetLink,
             });
 
-            res.status(200).json({ message: "Password reset link sent to your email" });
-        } catch (error: any) {
-            next(new ApiError(400, error.message));
-        }
+            return { message: "Password reset link sent to your email." };
+        }, res, next, 200);
     }
 
     async resetPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
         const { token, password } = req.body;
-
-        try {
-            await this.service.resetPassword(token, password);
-
-            res.status(200).json({ message: "Password reset successful" });
-        } catch (error: any) {
-            next(new ApiError(400, error.message));
+        if (!token || !password) {
+            return next(new ApiError(400, "Token and new password are required."));
         }
+
+        await this.handleRequest(
+            () => this.service.resetPassword(token, password),
+            res,
+            next,
+            200
+        );
     }
 
     async changePassword(req: Request, res: Response, next: NextFunction): Promise<void> {
-        const userId = (req.user as any).id;
+        const userId = (req.user as any)?.id;
         const { oldPassword, newPassword } = req.body;
 
         if (!userId) {
-            res.status(401).json({ error: "Unauthorized" });
+            throw new ApiError(401, "Unauthorized");
         }
-        try {
-            // 1. Change the password after verifying the old password
-            await this.service.changePassword(userId, oldPassword, newPassword);
-            res.json({ message: "Password changed successfully." });
-        } catch (error: any) {
-            next(new ApiError(400, error.message));
+
+        if (!oldPassword || !newPassword) {
+            return next(new ApiError(400, "Old and new passwords are required."));
         }
+
+        await this.handleRequest(
+            () => this.service.changePassword(userId, oldPassword, newPassword),
+            res,
+            next,
+            200
+        );
     }
 }
 

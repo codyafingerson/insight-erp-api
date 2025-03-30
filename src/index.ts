@@ -5,10 +5,11 @@ import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import cors from "cors";
 import session from "express-session";
-import passport from "./config/passport";
+import passport from "./config/auth/passport.ts"
 import errorHandler from "./middlewares/errorMiddleware";
 import { RedisStore } from "connect-redis";
-import { redisClient } from "./config/redis";
+import { redisClient } from "./config/database/redis";
+import { morganStream } from "./utils/logger";
 
 // Controllers
 import RolesRoutes from "./api/roles/RolesRoutes";
@@ -18,7 +19,7 @@ import DepartmentsRoutes from "./api/departments/DepartmentsRoutes";
 import EmployeesRoutes from "./api/employees/EmployeesRoutes";
 import ProductCategoriesRoutes from "./api/product-categories/ProductsCategoriesRoutes";
 import ProductRoutes from "./api/products/ProductsRoutes";
-import { morganStream } from "./utils/logger";
+import OrdersRoutes from "./api/orders/OrdersRoutes.ts";
 
 class Server {
     private app: Application;
@@ -122,6 +123,7 @@ class Server {
         this.app.use("/api/employees", EmployeesRoutes);
         this.app.use("/api/product-categories", ProductCategoriesRoutes);
         this.app.use("/api/products", ProductRoutes);
+        this.app.use("/api/orders", OrdersRoutes);
     }
 }
 

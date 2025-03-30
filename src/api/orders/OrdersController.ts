@@ -1,19 +1,25 @@
 import type { NextFunction, Request, Response } from "express";
-import BaseController from "../BaseController";
-import ProductsService from "./ProductsService";
+import OrdersService from "./OrdersService";
+import type { OrderDto } from "./OrdersDto";
 import ApiError from "../../utils/ApiError";
+import BaseController from "../BaseController";
 
-class ProductsController extends BaseController<ProductsService> {
-    constructor(service: ProductsService) {
+export default class OrdersController extends BaseController<OrdersService> {
+    constructor(service: OrdersService) {
         super(service);
     }
 
     async create(req: Request, res: Response, next: NextFunction): Promise<void> {
-        await this.handleRequest(() => this.service.createProduct(req.body), res, next, 201);
+        const { name, description, status, totalAmount, orderItems, orderDate } = req.body;
+        if (!name) {
+            return next(new ApiError(400, "Order name is required."));
+        }
+        const data: OrderDto = { name, description, status, totalAmount, orderItems, orderDate };
+        await this.handleRequest(() => this.service.createOrder(data), res, next, 201);
     }
 
     async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
-        await this.handleRequest(() => this.service.getProducts(), res, next);
+        await this.handleRequest(() => this.service.getAllOrders(), res, next);
     }
 
     async getById(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -21,7 +27,7 @@ class ProductsController extends BaseController<ProductsService> {
         if (!id) {
             return next(new ApiError(400, "No ID provided."));
         }
-        await this.handleRequest(() => this.service.getProductById(id), res, next);
+        await this.handleRequest(() => this.service.getOrderById(id), res, next);
     }
 
     async update(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -29,7 +35,7 @@ class ProductsController extends BaseController<ProductsService> {
         if (!id) {
             return next(new ApiError(400, "No ID provided."));
         }
-        await this.handleRequest(() => this.service.updateProduct(id, req.body), res, next, 200);
+        await this.handleRequest(() => this.service.updateOrder(id, req.body), res, next);
     }
 
     async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -39,7 +45,7 @@ class ProductsController extends BaseController<ProductsService> {
         }
         await this.handleRequest(
             async () => {
-                await this.service.deleteProduct(id);
+                await this.service.deleteOrder(id);
                 return null;
             },
             res,
@@ -48,5 +54,3 @@ class ProductsController extends BaseController<ProductsService> {
         );
     }
 }
-
-export default ProductsController;
