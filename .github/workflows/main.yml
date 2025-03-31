@@ -1,0 +1,35 @@
+name: CI/CD Pipeline - Test and Deploy
+
+# Controls when the workflow will run
+on:
+  push:
+    branches: [ main ] # Trigger on pushes to the main branch
+  pull_request:
+    branches: [ main ] # Also run tests on pull requests to main (but don't deploy)
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest # Use the latest Ubuntu runner
+
+    steps:
+      # 1. Check out the repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Setup Bun runtime
+      #    See https://github.com/oven-sh/setup-bun for options
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
+      # 3. Install dependencies
+      #    Use --frozen-lockfile if you commit bun.lockb for reproducible installs
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      # 4. Run tests
+      - name: Run tests
+        run: bun test
+
+      - name: Trigger Render Deploy
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && success()
+        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
