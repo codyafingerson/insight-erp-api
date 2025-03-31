@@ -16,7 +16,7 @@ const logLevel = isProduction ? "error" : "debug";
 
 // Custom format that logs the timestamp, level, and message (or stack if an error)
 const customFormat = printf(({ timestamp, level, message, stack }) => {
-    return `${timestamp} [${level.toUpperCase()}]: ${stack || message}`;
+    return `${timestamp} [${level}]: ${stack || message}`;
 });
 
 const logger = winston.createLogger({

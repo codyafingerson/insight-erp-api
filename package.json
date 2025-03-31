@@ -5,7 +5,7 @@
     "version": "0.1.0",
     "main": "src/index.ts",
     "scripts": {
-        "dev": "bun --hot src/index.ts",
+        "dev": "bun --hot run src/index.ts",
         "build": "bun run build.ts",
         "start": "bun run dist/index.js",
         "prisma:migrate": "bunx prisma migrate dev",
