@@ -72,12 +72,8 @@ class Server {
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: false }));
 
-        this.app.use(
-            morgan(":method :url :status :res[content-length] - :response-time ms", {
-                stream: morganStream
-            })
-        );
-
+        this.app.use(morgan("combined", { stream: morganStream })); // Use the custom morgan stream
+        
         // Initialize Redis store using the ioredis client
         const redisStore = new RedisStore({
             client: redisClient,
@@ -101,7 +97,7 @@ class Server {
                 cookie: {
                     httpOnly: true,
                     secure: environment.nodeEnv === "production",
-                    sameSite: "none",
+                    sameSite: "lax",
                     maxAge: 1000 * 60 * 60 // 1 hour
                 }
             })
