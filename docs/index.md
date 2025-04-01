@@ -106,19 +106,13 @@ Ensure you have the following installed before setup:
 
 ---
 
-## 📡 API Routes
+## 📋 Documentation
 
 API testing is available via the Postman collection.
 
 > **Note:** The Postman collection is actively updated. Contact the project owner for access.
 
-### Authentication
-
-| Method | Endpoint           | Description                    | Access  |
-|--------|--------------------|--------------------------------|---------|
-| `POST` | `/api/auth/login`  | Logs in a user                 | Public  |
-| `GET`  | `/api/auth/me`     | Returns the authenticated user | Private |
-| `POST` | `/api/auth/logout` | Logs out a user                | Public  |
+- [Authentication Module](./authentication-module.md)
 
 ---
 
