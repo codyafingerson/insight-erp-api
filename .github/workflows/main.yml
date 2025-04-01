@@ -49,14 +49,22 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
+
       - name: Install dependencies
         run: bun install --frozen-lockfile
+
+      - name: Wait for DB stabilization
+        run: sleep 5
+
       - name: Run Prisma migrations
         run: bunx prisma migrate deploy
+
       - name: Run tests
         run: bun test
+
       - name: Trigger Render Deploy
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && success()
         run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
