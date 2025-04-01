@@ -15,7 +15,7 @@ const isProduction = process.env.NODE_ENV === "production";
 const environment = {
     nodeEnv: ensureEnvVar("NODE_ENV"),
     sessionSecret: ensureEnvVar("SESSION_SECRET"),
-    port: parseInt(ensureEnvVar("PORT"), 10),
+    port: parseInt(ensureEnvVar("PORT", "3000"), 10),
 
     database: {
         url: ensureEnvVar("DATABASE_URL"),

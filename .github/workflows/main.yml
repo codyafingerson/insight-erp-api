@@ -13,9 +13,21 @@ jobs:
       postgres:
         image: postgres:15
         env:
-          POSTGRES_USER: testuser
-          POSTGRES_PASSWORD: testpassword
-          POSTGRES_DB: testdb
+          DATABASE_URL: postgresql://testuser:testpassword@localhost:5432/testdb
+          REDIS_URL: redis://redis_ci:6379
+          NODE_ENV: test
+          SESSION_SECRET: testsecret
+          REDIS_HOST: redis_ci
+          REDIS_PORT: "6379"
+          ROOT_NAME: "Test Root"
+          ROOT_USERNAME: testroot
+          ROOT_EMAIL: root@test.com
+          ROOT_PASSWORD: rootpass
+          MAIL_HOST: smtp.test.com
+          MAIL_PORT: "465"
+          MAIL_USER: testmailuser
+          MAIL_PASSWORD: testmailpassword
+          CORS_ALLOWED_ORIGINS: http://localhost:3000
         ports:
           - 5432:5432
         options: >-
