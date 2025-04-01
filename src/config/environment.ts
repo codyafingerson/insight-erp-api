@@ -11,6 +11,7 @@ function ensureEnvVar(variable: string, defaultValue?: string): string {
 }
 
 const isProduction = process.env.NODE_ENV === "production";
+const isTest = process.env.NODE_ENV === "test";
 
 const environment = {
     nodeEnv: ensureEnvVar("NODE_ENV"),
@@ -19,13 +20,12 @@ const environment = {
 
     database: {
         url: ensureEnvVar("DATABASE_URL"),
-        ...(isProduction
-            ? {}
-            : {
-                  user: ensureEnvVar("POSTGRES_USER"),
-                  password: ensureEnvVar("POSTGRES_PASSWORD"),
-                  db: ensureEnvVar("POSTGRES_DB")
-              })
+        ...(isProduction ? {} : isTest ? {} : {
+            // Development-specific settings
+            user: ensureEnvVar("POSTGRES_USER"),
+            password: ensureEnvVar("POSTGRES_PASSWORD"),
+            db: ensureEnvVar("POSTGRES_DB")
+        })
     },
 
     redis: {
