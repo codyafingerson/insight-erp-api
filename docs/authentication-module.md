@@ -1,3 +1,5 @@
+# Authentication Module
+
 ## Overview
 
 This documentation describes the authentication module. It handles user login, session management, retrieval of authenticated user details, and logout functionality.
